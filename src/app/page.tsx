@@ -1,8 +1,9 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { AlertTriangle, ArrowUpRight, CheckCircle2, Clock3, MapPinned, RefreshCw, Search, ShieldCheck, SlidersHorizontal } from "lucide-react";
+import { AlertTriangle, ArrowUpRight, CheckCircle2, Clock3, MapPinned, RefreshCw, Search, ShieldCheck, SlidersHorizontal, UserRound } from "lucide-react";
 import { isSupabaseConfigured, supabase } from "@/lib/supabase/client";
 import type { PotholeReport } from "@/types/pothole";
 
@@ -41,7 +42,7 @@ export default function HomePage() {
   return <main className="app-shell">
     <header className="topbar">
       <a className="brand" href="/" aria-label="FixMyRoad home"><span className="brand-mark"><MapPinned size={23}/></span><span><strong>FixMyRoad</strong><small>GIS · ROAD INTELLIGENCE</small></span></a>
-      <div className="topbar-right"><span className="location-chip"><span className="live-dot"/>Wagholi, Pune</span><a className="github-link" href="https://github.com/adityasxh/FixMyRoad" target="_blank" rel="noreferrer">View repository <ArrowUpRight size={15}/></a></div>
+      <div className="topbar-right"><span className="location-chip"><span className="live-dot"/>Wagholi, Pune</span><div className="header-actions"><Link className="signin-link" href="/auth"><UserRound size={15}/> Sign in / Register</Link><a className="github-link" href="https://github.com/adityasxh/FixMyRoad" target="_blank" rel="noreferrer">View repository <ArrowUpRight size={15}/></a></div></div>
     </header>
     <section className="hero">
       <div className="hero-copy"><div className="eyebrow"><span/>COMMUNITY ROAD SAFETY</div><h1>Every safer street<br/>starts with <span>one report.</span></h1><p>A location-first view of road hazards in Wagholi. Explore reported potholes, understand urgency, and help make repair priorities more transparent.</p><div className="hero-note"><ShieldCheck size={17}/> Community insight · Data-led repair priorities</div></div>
