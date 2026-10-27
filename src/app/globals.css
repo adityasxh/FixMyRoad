@@ -76,3 +76,28 @@
   .auth-benefits li{font-size:12px}
   .auth-disclaimer{font-size:10px}
 }
+
+/* Refined auth sizing: comfortable desktop proportions without oversized controls */
+@media(min-width:601px){
+  .auth-shell{width:min(calc(100% - 40px),760px);padding-top:24px}
+  .auth-card{padding:32px 30px;border-radius:22px}
+  .auth-brand{margin-bottom:27px;gap:13px}
+  .auth-brand .brand-mark{width:52px;height:52px;border-radius:16px}
+  .auth-brand .brand-mark svg{width:26px;height:26px}
+  .auth-brand strong{font-size:25px}
+  .auth-brand small{font-size:10px;letter-spacing:1.4px}
+  .auth-pill{padding:8px 12px;font-size:10px}
+  .auth-pill svg{width:16px;height:16px}
+  .auth-card h1{font-size:36px;letter-spacing:-1.4px;margin:22px 0 10px}
+  .auth-intro{font-size:14px;line-height:1.65;margin-bottom:23px}
+  .auth-form{gap:15px}
+  .auth-form label{font-size:12px;gap:7px}
+  .auth-form input{font-size:14px;padding:14px 16px;border-radius:12px}
+  .auth-submit,.google-button{min-height:58px;padding:16px 18px;font-size:14px;border-radius:12px}
+  .google-button-g{font-size:21px}
+  .auth-divider{font-size:10px;margin:27px 0 18px;gap:15px}
+  .auth-benefits{gap:13px}
+  .auth-benefits li{font-size:13px;gap:10px}
+  .auth-benefits svg{width:18px;height:18px}
+  .auth-disclaimer{font-size:10px;margin-top:20px}
+}
