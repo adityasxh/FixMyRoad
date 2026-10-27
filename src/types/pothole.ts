@@ -15,7 +15,7 @@ export interface PotholeReport {
   ai_assessment_status?: "pending" | "assessed" | "needs_review" | "failed" | "not_a_pothole";
   ai_assessment_notes?: string | null;
   verified_severity?: number | null;
-  severity_source?: "user_reported" | "ai_assessed" | "moderator_verified";
+  severity_source?: "ai_pending" | "user_reported" | "ai_assessed" | "moderator_verified";
   traffic_level: number;
   photo_url: string | null;
   status: PotholeStatus;
