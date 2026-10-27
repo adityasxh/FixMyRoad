@@ -1,72 +1,76 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { AlertTriangle, ArrowUpRight, CheckCircle2, Clock3, MapPinned, RefreshCw, Search, ShieldCheck, SlidersHorizontal, UserRound } from "lucide-react";
-import { isSupabaseConfigured, supabase } from "@/lib/supabase/client";
-import type { PotholeReport } from "@/types/pothole";
+import { useEffect, useState } from "react";
+import { ArrowRight, MapPinned, ShieldCheck, Camera, LocateFixed, BarChart3, Menu, X, CircleCheck, Map, AlertTriangle, Clock3, UserRound } from "lucide-react";
+import { supabase } from "@/lib/supabase/client";
 
-const MapView = dynamic(() => import("@/components/map/MapView"), { ssr: false, loading: () => <div className="map-loading">Loading interactive map…</div> });
-type Filter = "all" | "open" | "high";
-const severityLabel = (n: number) => n >= 4 ? "High" : n === 3 ? "Medium" : "Low";
-const dateLabel = (s: string) => { const d = new Date(s); return Number.isNaN(d.getTime()) ? "Date unavailable" : new Intl.DateTimeFormat("en-IN",{day:"numeric",month:"short"}).format(d); };
-
-export default function HomePage() {
-  const [reports,setReports] = useState<PotholeReport[]>([]);
-  const [loading,setLoading] = useState(true);
-  const [refreshing,setRefreshing] = useState(false);
-  const [message,setMessage] = useState("Checking Supabase connection…");
-  const [filter,setFilter] = useState<Filter>("all");
-  const [search,setSearch] = useState("");
-
-  const loadReports = useCallback(async (refresh = false) => {
-    refresh ? setRefreshing(true) : setLoading(true);
-    if (!supabase) { setReports([]); setMessage("Supabase is not configured. Add your public URL and publishable key to .env.local."); setLoading(false); setRefreshing(false); return; }
-    const {data,error} = await supabase.from("pothole_priority_queue").select("*").order("priority_score",{ascending:false}).limit(250);
-    if (error) setMessage("Could not load reports. Check your Supabase URL, public key, and table policies.");
-    else { setReports((data ?? []) as PotholeReport[]); setMessage("Connected to Supabase · displaying records currently in the database."); }
-    setLoading(false); setRefreshing(false);
-  },[]);
-  useEffect(()=>{ void loadReports(); },[loadReports]);
-
-  const open = useMemo(()=>reports.filter(r=>r.status==="open"||r.status==="in_progress"),[reports]);
-  const high = useMemo(()=>open.filter(r=>r.severity>=4).length,[open]);
-  const verified = useMemo(()=>reports.filter(r=>r.verification_status==="verified").length,[reports]);
-  const visible = useMemo(()=>reports.filter(r=>{
-    const q=search.trim().toLowerCase();
-    const f=filter==="all"||(filter==="open"&&(r.status==="open"||r.status==="in_progress"))||(filter==="high"&&r.severity>=4);
-    return f&&(!q||r.title.toLowerCase().includes(q)||(r.description??"").toLowerCase().includes(q));
-  }),[reports,filter,search]);
-
-  return <main className="app-shell">
-    <header className="topbar">
-      <a className="brand" href="/" aria-label="FixMyRoad home"><span className="brand-mark"><MapPinned size={23}/></span><span><strong>FixMyRoad</strong><small>GIS · ROAD INTELLIGENCE</small></span></a>
-      <div className="topbar-right"><span className="location-chip"><span className="live-dot"/>Wagholi, Pune</span><div className="header-actions"><Link className="signin-link" href="/auth"><UserRound size={15}/> Sign in / Register</Link><a className="github-link" href="https://github.com/adityasxh/FixMyRoad" target="_blank" rel="noreferrer">View repository <ArrowUpRight size={15}/></a></div></div>
+export default function LandingPage() {
+  const [signedIn, setSignedIn] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  useEffect(() => {
+    let alive = true;
+    void supabase?.auth.getSession().then(({ data }) => { if (alive) setSignedIn(Boolean(data.session)); });
+    const { data } = supabase?.auth.onAuthStateChange((_event, session) => setSignedIn(Boolean(session))) ?? { data: { subscription: { unsubscribe: () => {} } } };
+    return () => { alive = false; data.subscription.unsubscribe(); };
+  }, []);
+  const reportHref = signedIn ? "/report" : "/login?next=/report";
+  return <main className="landing-shell">
+    <header className="landing-nav">
+      <Link href="/" className="brand"><span className="brand-mark"><MapPinned size={23}/></span><span><strong>FixMyRoad</strong><small>GIS · ROAD INTELLIGENCE</small></span></Link>
+      <button className="mobile-menu-toggle" aria-label="Toggle navigation" onClick={() => setMenuOpen(v => !v)}>{menuOpen ? <X size={21}/> : <Menu size={21}/>}</button>
+      <nav className={menuOpen ? "landing-nav-links open" : "landing-nav-links"}>
+        <a href="#how-it-works" onClick={() => setMenuOpen(false)}>How it works</a>
+        <a href="#features" onClick={() => setMenuOpen(false)}>Why FixMyRoad</a>
+        <Link href="/dashboard" onClick={() => setMenuOpen(false)}>Explore reports</Link>
+        <Link className="nav-login" href="/login" onClick={() => setMenuOpen(false)}><UserRound size={15}/> Sign in</Link>
+        <Link className="nav-register" href="/register" onClick={() => setMenuOpen(false)}>Register <ArrowRight size={15}/></Link>
+        <Link className="nav-report" href={reportHref} onClick={() => setMenuOpen(false)}><MapPinned size={15}/> Report a pothole</Link>
+      </nav>
     </header>
-    <section className="hero">
-      <div className="hero-copy"><div className="eyebrow"><span/>COMMUNITY ROAD SAFETY</div><h1>Every safer street<br/>starts with <span>one report.</span></h1><p>A location-first view of road hazards in Wagholi. Explore reported potholes, understand urgency, and help make repair priorities more transparent.</p><div className="hero-note"><ShieldCheck size={17}/> Community insight · Data-led repair priorities</div></div>
-      <aside className="hero-stamp"><span className="stamp-icon"><MapPinned size={23}/></span><span className="stamp-label">ACTIVE PILOT AREA</span><strong>Wagholi</strong><span className="stamp-sub">Pune, Maharashtra, India</span><span className="pilot-status"><span className="live-dot"/> Pilot dashboard</span></aside>
-    </section>
-    <section className="stats-grid" aria-label="Report summary">
-      <article className="stat-card"><span className="stat-icon stat-icon-blue"><MapPinned size={19}/></span><div><span className="stat-label">Open reports</span><strong>{loading?"—":open.length}</strong><small>Open or being addressed</small></div><span className="stat-corner">01</span></article>
-      <article className="stat-card"><span className="stat-icon stat-icon-orange"><AlertTriangle size={19}/></span><div><span className="stat-label">High severity</span><strong>{loading?"—":high}</strong><small>Severity level 4–5</small></div><span className="stat-corner">02</span></article>
-      <article className="stat-card"><span className="stat-icon stat-icon-green"><CheckCircle2 size={19}/></span><div><span className="stat-label">Verified reports</span><strong>{loading?"—":verified}</strong><small>Verified in the database</small></div><span className="stat-corner">03</span></article>
-    </section>
-    <section className="workspace">
-      <div className="section-heading"><div><span className="section-kicker">LIVE GEOSPATIAL VIEW</span><h2>Road hazard monitor</h2><p>Explore the map and review reports ranked for attention.</p></div><button className="refresh-button" onClick={()=>void loadReports(true)} disabled={loading||refreshing}><RefreshCw size={15} className={refreshing?"spin":""}/>{refreshing?"Refreshing":"Refresh data"}</button></div>
-      <div className="map-layout">
-        <div className="map-column"><div className="map-card-top"><div><strong className="map-card-title">Wagholi area</strong><span className="map-card-subtitle">Interactive map · OpenStreetMap</span></div><span className="map-live-pill"><i/>DATABASE REPORTS</span></div><div className="map-frame"><MapView reports={reports}/><div className="map-attribution-note">Map tiles © OpenStreetMap contributors</div></div><div className="map-footer"><span><i className="legend-dot legend-high"/>High severity</span><span><i className="legend-dot legend-medium"/>Medium</span><span><i className="legend-dot legend-low"/>Low</span><span className="map-footer-count">{reports.length} total records</span></div></div>
-        <aside className="queue-panel"><div className="queue-header"><div><span className="section-kicker">ACTION QUEUE</span><h3>Priority reports</h3></div><span className="queue-count">{visible.length}</span></div>
-          <label className="search-box"><Search size={15}/><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search reports…" aria-label="Search reports"/></label>
-          <div className="filter-row"><button className={filter==="all"?"filter-chip active":"filter-chip"} onClick={()=>setFilter("all")}><SlidersHorizontal size={12}/>All</button><button className={filter==="open"?"filter-chip active":"filter-chip"} onClick={()=>setFilter("open")}>Open</button><button className={filter==="high"?"filter-chip active":"filter-chip"} onClick={()=>setFilter("high")}>High severity</button></div>
-          <div className="report-list">{loading?<div className="empty-state"><span className="empty-icon"><RefreshCw size={18}/></span><strong>Loading reports</strong><p>Fetching records from Supabase.</p></div>:visible.length===0?<div className="empty-state"><span className="empty-icon"><MapPinned size={20}/></span><strong>{search||filter!=="all"?"No matching reports":"No reports yet"}</strong><p>{search||filter!=="all"?"Try another search or filter.":"New database reports will appear here and on the map. No demo reports are being presented as real."}</p></div>:visible.slice(0,10).map(r=><article className="report-row" key={r.id}><span className={r.severity>=4?"report-severity severity-high":r.severity===3?"report-severity severity-medium":"report-severity severity-low"}>{r.severity}</span><div className="report-main"><strong>{r.title}</strong><span>{r.description||"No description provided"}</span><div className="report-meta"><span className="report-status">{r.status.replace("_"," ")}</span><span><Clock3 size={11}/>{dateLabel(r.reported_at)}</span></div></div><span className={r.severity>=4?"severity-label text-high":r.severity===3?"severity-label text-medium":"severity-label text-low"}>{severityLabel(r.severity)}</span></article>)}</div>
-          <div className="queue-footnote"><ShieldCheck size={14}/>Priority considers severity, traffic, recurrence, and report age.</div>
-        </aside>
+
+    <section className="landing-hero">
+      <div className="landing-hero-copy">
+        <div className="landing-eyebrow"><span/> COMMUNITY-POWERED ROAD SAFETY <span className="pilot-chip">WAGHOLI PILOT</span></div>
+        <h1>Better roads begin<br/>with <em>being heard.</em></h1>
+        <p>Spot a pothole? Report it with a photo and your location. FixMyRoad GIS helps turn community reports into a clear, map-based priority list for road repair.</p>
+        <div className="landing-cta-row"><Link href={reportHref} className="primary-cta"><Camera size={18}/> Report a pothole <ArrowRight size={17}/></Link><Link href="/dashboard" className="secondary-cta"><Map size={17}/> Explore the map</Link></div>
+        <div className="landing-trust"><span><ShieldCheck size={16}/> Sign-in required for reports</span><span><LocateFixed size={16}/> Location-aware submissions</span></div>
       </div>
-      <div className={`connection-banner ${isSupabaseConfigured&&!loading&&!message.startsWith("Connected")?"connection-warning":""}`}><span className="connection-indicator"/><span>{loading?"Checking Supabase connection…":message}</span></div>
+      <div className="landing-hero-art" aria-label="Illustration of a road map with pothole reports">
+        <div className="art-map-grid"></div><div className="art-road art-road-one"></div><div className="art-road art-road-two"></div>
+        <div className="art-map-label label-one"><MapPinned size={14}/> WAGHOLI, PUNE</div>
+        <div className="art-pin pin-one"><AlertTriangle size={20}/></div><div className="art-pin pin-two"><MapPinned size={20}/></div><div className="art-pin pin-three"><Camera size={19}/></div>
+        <div className="art-report-card"><span className="art-card-icon"><AlertTriangle size={17}/></span><div><strong>Road hazard reported</strong><small>Photo + GPS location</small></div><span className="art-card-status">NEW</span></div>
+        <div className="art-map-caption"><span className="art-live-dot"/> COMMUNITY REPORTS · MAP VIEW</div>
+      </div>
     </section>
-    <section className="bottom-grid"><article className="info-card"><div className="info-card-heading"><span className="info-icon"><ShieldCheck size={18}/></span><h3>Transparent prioritization</h3></div><p>Reports use an explainable score: severity 40%, traffic importance 25%, repeat reports 20%, and age 15%. A score supports review; it does not automatically decide repairs.</p><span className="small-tag">Explainable scoring</span></article><article className="info-card"><div className="info-card-heading"><span className="info-icon info-icon-orange"><MapPinned size={18}/></span><h3>Evidence over guesses</h3></div><p>This dashboard displays database records only. Empty states are intentional; sample reports must be labelled and never presented as verified public reports.</p><span className="small-tag">Data integrity first</span></article></section>
-    <footer className="footer"><span>© {new Date().getFullYear()} FixMyRoad GIS</span><span>Built with Next.js, Supabase, PostGIS & OpenStreetMap</span></footer>
+
+    <section className="landing-value-strip" id="features">
+      <div><span className="value-icon"><Camera size={19}/></span><strong>Photo evidence</strong><p>Capture a new photo or upload one already taken.</p></div>
+      <div><span className="value-icon"><LocateFixed size={19}/></span><strong>Location matters</strong><p>Use your device location to place the report on the map.</p></div>
+      <div><span className="value-icon"><BarChart3 size={19}/></span><strong>Clear priorities</strong><p>Help organise reports by urgency and location context.</p></div>
+      <div><span className="value-icon"><ShieldCheck size={19}/></span><strong>Account-linked</strong><p>Sign in so reports can be associated with an account.</p></div>
+    </section>
+
+    <section className="landing-how" id="how-it-works">
+      <div className="landing-section-head"><span className="landing-eyebrow">SIMPLE. LOCAL. ACTIONABLE.</span><h2>From pothole to priority.</h2><p>A straightforward reporting process designed around useful evidence.</p></div>
+      <div className="landing-steps">
+        <article><span className="step-number">01</span><span className="step-icon"><UserRound size={21}/></span><h3>Create your account</h3><p>Register with your name, email and password, or use Google sign-in.</p></article>
+        <article><span className="step-number">02</span><span className="step-icon"><Camera size={21}/></span><h3>Add photo and location</h3><p>Take a picture or choose one from your phone, then capture your current GPS coordinates.</p></article>
+        <article><span className="step-number">03</span><span className="step-icon"><MapPinned size={21}/></span><h3>Submit a report</h3><p>Your signed-in account helps associate the report with its submitter for follow-up.</p></article>
+        <article><span className="step-number">04</span><span className="step-icon"><BarChart3 size={21}/></span><h3>Support better priorities</h3><p>Reports can be mapped and ranked to help reviewers understand where attention may be needed.</p></article>
+      </div>
+    </section>
+
+    <section className="landing-callout">
+      <div><span className="landing-eyebrow">YOUR STREET. YOUR VOICE.</span><h2>Seen a pothole on your route?</h2><p>Share the evidence and help build a clearer picture of road conditions in the pilot area.</p></div>
+      <Link href={reportHref} className="primary-cta">Report a pothole <ArrowRight size={17}/></Link>
+    </section>
+
+    <footer className="landing-footer">
+      <div className="footer-main"><Link href="/" className="brand"><span className="brand-mark"><MapPinned size={22}/></span><span><strong>FixMyRoad</strong><small>GIS · ROAD INTELLIGENCE</small></span></Link><p>Community reports. Geographic context. More transparent repair priorities.</p><div className="footer-links"><Link href="/dashboard">Explore reports</Link><Link href="/login">Sign in</Link><Link href="/register">Register</Link><Link href={reportHref}>Report a pothole</Link></div></div>
+      <div className="footer-bottom"><span>© {new Date().getFullYear()} FixMyRoad GIS · Wagholi, Pune pilot</span><span><ShieldCheck size={14}/> Reports are subject to review; submission does not guarantee repair.</span></div>
+    </footer>
   </main>;
 }
