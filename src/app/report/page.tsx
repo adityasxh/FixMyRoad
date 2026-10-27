@@ -61,7 +61,7 @@ export default function ReportPotholePage() {
       const photoUrl=supabase.storage.from("report-evidence").getPublicUrl(path).data.publicUrl;
       const {data:report,error:insertError}=await supabase.from("pothole_reports").insert({
         title:title.trim(),description:description.trim()||null,latitude:coords.latitude,longitude:coords.longitude,
-        severity:Number(severity),traffic_level:Number(traffic),photo_url:photoUrl,reporter_id:userId,
+        severity:Number(severity),user_reported_severity:Number(severity),traffic_level:Number(traffic),photo_url:photoUrl,reporter_id:userId,
         status:"open",verification_status:"unverified",source_type:"community",occurrence_count:1
       }).select("id").single();
       if(insertError) throw new Error("Could not save the report: "+insertError.message);
@@ -81,7 +81,7 @@ export default function ReportPotholePage() {
         <div className="report-form-section-title"><span>01</span><div><h2>What did you find?</h2><p>Describe the road hazard clearly.</p></div></div>
         <label className="report-field">Report title<input value={title} onChange={e=>setTitle(e.target.value)} required maxLength={100} placeholder="e.g. Deep pothole near the junction"/></label>
         <label className="report-field">Description <span className="optional-label">Optional</span><textarea value={description} onChange={e=>setDescription(e.target.value)} maxLength={1000} rows={3} placeholder="Road name, landmark or other useful details…"/></label>
-        <div className="report-two-fields"><label className="report-field">Estimated severity<select value={severity} onChange={e=>setSeverity(e.target.value)}><option value="1">1 · Low</option><option value="2">2 · Minor</option><option value="3">3 · Moderate</option><option value="4">4 · High</option><option value="5">5 · Critical</option></select></label><label className="report-field">Traffic importance<select value={traffic} onChange={e=>setTraffic(e.target.value)}><option value="1">1 · Very low</option><option value="2">2 · Low</option><option value="3">3 · Moderate</option><option value="4">4 · High</option><option value="5">5 · Very high</option></select></label></div>
+        <div className="report-two-fields"><label className="report-field">Your severity estimate<select value={severity} onChange={e=>setSeverity(e.target.value)}><option value="1">1 · Low</option><option value="2">2 · Minor</option><option value="3">3 · Moderate</option><option value="4">4 · High</option><option value="5">5 · Critical</option></select><small className="optional-label">This is recorded separately; system assessment and moderator review are separate.</small></label><label className="report-field">Traffic importance<select value={traffic} onChange={e=>setTraffic(e.target.value)}><option value="1">1 · Very low</option><option value="2">2 · Low</option><option value="3">3 · Moderate</option><option value="4">4 · High</option><option value="5">5 · Very high</option></select></label></div>
         <div className="report-form-divider"/>
         <div className="report-form-section-title"><span>02</span><div><h2>Add photo evidence</h2><p>Take a photo now or select one from your device.</p></div></div>
         <label className="photo-dropzone">
