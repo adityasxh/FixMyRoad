@@ -10,7 +10,7 @@ type ReviewReport = {
   id: string; title: string; description: string | null; photo_url: string | null;
   severity: number; user_reported_severity: number | null; ai_assessed_severity: number | null;
   ai_confidence: number | null; ai_model: string | null; ai_assessment_status: string;
-  ai_assessment_notes: string | null; verification_status: string; reported_at: string;
+  ai_assessment_notes: string | null; verification_status: string; verified_severity: number | null; reported_at: string;
 };
 
 export default function ModeratorReviewPage() {
@@ -33,7 +33,7 @@ export default function ModeratorReviewPage() {
     }
     const { data: rows, error: fetchError } = await supabase
       .from("pothole_reports")
-      .select("id,title,description,photo_url,severity,user_reported_severity,ai_assessed_severity,ai_confidence,ai_model,ai_assessment_status,ai_assessment_notes,verification_status,reported_at")
+      .select("id,title,description,photo_url,severity,user_reported_severity,ai_assessed_severity,ai_confidence,ai_model,ai_assessment_status,ai_assessment_notes,verification_status,verified_severity,reported_at")
       .neq("verification_status", "duplicate")
       .order("reported_at", { ascending: false }).limit(100);
     if (fetchError) setError(fetchError.message);
