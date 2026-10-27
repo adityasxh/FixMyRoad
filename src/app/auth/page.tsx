@@ -1,14 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useState, type FormEvent } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState, type FormEvent } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight, LoaderCircle, MapPinned, ShieldCheck } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 
 export default function AuthPage() {
   const router = useRouter();
+  const pathname = usePathname();
   const [mode, setMode] = useState<"register" | "signin">("register");
+  useEffect(() => { setMode(pathname === "/login" ? "signin" : "register"); }, [pathname]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -60,7 +62,8 @@ export default function AuthPage() {
         });
         if (error) throw error;
         const completed = data.user?.user_metadata?.profile_completed;
-        router.replace(completed ? "/" : "/auth/complete");
+        const next = new URLSearchParams(window.location.search).get("next");
+        router.replace(next && next.startsWith("/") ? next : (completed ? "/" : "/auth/complete"));
         router.refresh();
         return;
       }
