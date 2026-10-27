@@ -28,7 +28,8 @@ Deno.serve(async (req: Request) => {
   const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
   const geminiKey = Deno.env.get("GEMINI_API_KEY");
   const primaryModel = Deno.env.get("GEMINI_MODEL") || "gemini-3.8-flash";
-  const fallbackModel = primaryModel === "gemini-2.5-flash" ? "gemini-2.0-flash" : "gemini-2.5-flash";
+  const fallbackModel = "gemini-3.6-flash";
+  const finalFallbackModel = "gemini-3.5-flash-lite";
 
   if (!supabaseUrl || !anonKey || !serviceRoleKey) return json({ error: "Supabase function secrets are not configured." }, 500);
   if (!geminiKey) return json({ error: "GEMINI_API_KEY secret is missing. Add it in Supabase Edge Function Secrets." }, 503);
@@ -100,12 +101,12 @@ Return ONLY a JSON object with exactly these fields:
 {"pothole_detected": boolean, "estimated_severity": integer from 1 to 5, "confidence": number from 0 to 1, "reason": string, "needs_human_review": boolean}
 Severity guide: 1=minor surface defect; 2=small/shallow visible pothole; 3=moderate damage; 4=large/deep-appearing or substantial edge breakdown; 5=extensive/severe visible damage presenting a potentially serious hazard. A photo alone cannot establish actual depth. Be conservative and request human review if uncertain.`;
 
-    // Retry transient overload/timeouts, then use a stable fallback vision model.
-    // Each attempt has its own timeout so one overloaded model cannot consume the entire request.
+    // Try the configured model, then current stable multimodal fallbacks. Avoid retired 2.0 models and restricted 2.5 access.
+    // Each model gets its own timeout so a single slow endpoint cannot consume the whole request.
     let geminiResponse: Response | null = null;
     let model = primaryModel;
     let lastFailure = "";
-    const models = [primaryModel, primaryModel, fallbackModel];
+    const models = [...new Set([primaryModel, fallbackModel, finalFallbackModel])];
     for (let attempt = 0; attempt < models.length; attempt++) {
       model = models[attempt];
       try {
@@ -121,7 +122,7 @@ Severity guide: 1=minor surface defect; 2=small/shallow visible pothole; 3=moder
               ] }],
               generationConfig: { responseMimeType: "application/json", temperature: 0.1, maxOutputTokens: 300 },
             }),
-            signal: AbortSignal.timeout(attempt === 2 ? 18000 : 12000),
+            signal: AbortSignal.timeout(18000),
           },
         );
         if (geminiResponse.ok) break;
