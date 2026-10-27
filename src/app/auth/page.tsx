@@ -63,7 +63,7 @@ export default function AuthPage() {
         if (error) throw error;
         const completed = data.user?.user_metadata?.profile_completed;
         const next = new URLSearchParams(window.location.search).get("next");
-        router.replace(next && next.startsWith("/") ? next : (completed ? "/" : "/auth/complete"));
+        router.replace(next && next.startsWith("/") ? next : (completed ? "/account" : "/auth/complete"));
         router.refresh();
         return;
       }
