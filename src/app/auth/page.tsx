@@ -136,6 +136,12 @@ export default function AuthPage() {
           Continue with Google
           <ArrowRight size={16} />
         </button>
+        <p className="auth-switch-link">
+          {mode === "register" ? "Already have an account?" : "New to FixMyRoad?"}{" "}
+          <Link href={mode === "register" ? "/login" : "/register"}>
+            {mode === "register" ? "Sign in" : "Create an account"}
+          </Link>
+        </p>
         {mode === "signin" && <>
           <div className="auth-divider"><span>YOUR ACCOUNT</span></div>
           <ul className="auth-benefits">
