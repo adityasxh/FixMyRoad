@@ -27,7 +27,8 @@ Deno.serve(async (req: Request) => {
   const anonKey = Deno.env.get("SUPABASE_ANON_KEY");
   const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
   const geminiKey = Deno.env.get("GEMINI_API_KEY");
-  const model = Deno.env.get("GEMINI_MODEL") || "gemini-3.8-flash";
+  const primaryModel = Deno.env.get("GEMINI_MODEL") || "gemini-3.8-flash";
+  const fallbackModel = primaryModel === "gemini-2.5-flash" ? "gemini-2.0-flash" : "gemini-2.5-flash";
 
   if (!supabaseUrl || !anonKey || !serviceRoleKey) return json({ error: "Supabase function secrets are not configured." }, 500);
   if (!geminiKey) return json({ error: "GEMINI_API_KEY secret is missing. Add it in Supabase Edge Function Secrets." }, 503);
@@ -99,26 +100,44 @@ Return ONLY a JSON object with exactly these fields:
 {"pothole_detected": boolean, "estimated_severity": integer from 1 to 5, "confidence": number from 0 to 1, "reason": string, "needs_human_review": boolean}
 Severity guide: 1=minor surface defect; 2=small/shallow visible pothole; 3=moderate damage; 4=large/deep-appearing or substantial edge breakdown; 5=extensive/severe visible damage presenting a potentially serious hazard. A photo alone cannot establish actual depth. Be conservative and request human review if uncertain.`;
 
-    const geminiResponse = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "x-goog-api-key": geminiKey },
-        body: JSON.stringify({
-          contents: [{ role: "user", parts: [
-            { text: prompt },
-            { inline_data: { mime_type: mime, data: imageBase64 } },
-          ] }],
-          generationConfig: { responseMimeType: "application/json", temperature: 0.1, maxOutputTokens: 300 },
-        }),
-        signal: AbortSignal.timeout(30000),
-      },
-    );
-
-    if (!geminiResponse.ok) {
-      const details = await geminiResponse.text();
-      console.error("Gemini request failed", geminiResponse.status, details.slice(0, 1000));
-      throw new Error(geminiResponse.status === 429 ? "Gemini rate limit reached. Try again later." : "Gemini could not assess this image. Check the API key, model availability, and quota.");
+    // Retry transient overload/timeouts, then use a stable fallback vision model.
+    // Each attempt has its own timeout so one overloaded model cannot consume the entire request.
+    let geminiResponse: Response | null = null;
+    let model = primaryModel;
+    let lastFailure = "";
+    const models = [primaryModel, primaryModel, fallbackModel];
+    for (let attempt = 0; attempt < models.length; attempt++) {
+      model = models[attempt];
+      try {
+        geminiResponse = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "x-goog-api-key": geminiKey },
+            body: JSON.stringify({
+              contents: [{ role: "user", parts: [
+                { text: prompt },
+                { inline_data: { mime_type: mime, data: imageBase64 } },
+              ] }],
+              generationConfig: { responseMimeType: "application/json", temperature: 0.1, maxOutputTokens: 300 },
+            }),
+            signal: AbortSignal.timeout(attempt === 2 ? 18000 : 12000),
+          },
+        );
+        if (geminiResponse.ok) break;
+        const details = await geminiResponse.text();
+        lastFailure = `HTTP ${geminiResponse.status}: ${details.slice(0, 400)}`;
+        console.error(`Gemini model ${model} attempt ${attempt + 1} failed:`, lastFailure);
+        if (![429, 500, 502, 503, 504].includes(geminiResponse.status)) break;
+      } catch (error) {
+        lastFailure = error instanceof Error ? error.message : "Gemini request failed.";
+        console.error(`Gemini model ${model} attempt ${attempt + 1} error:`, lastFailure);
+      }
+      if (attempt < models.length - 1) await new Promise((resolve) => setTimeout(resolve, 400 * (attempt + 1)));
+    }
+    if (!geminiResponse?.ok) {
+      const friendly = lastFailure.includes("429") ? "Gemini rate limit reached across available models. Try again shortly." : "Gemini models were unavailable or timed out. The report is saved; retry its AI assessment.";
+      throw new Error(friendly);
     }
 
     const geminiData = await geminiResponse.json();
