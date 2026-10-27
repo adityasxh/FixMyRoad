@@ -7,14 +7,16 @@ import { supabase } from "@/lib/supabase/client";
 
 export default function LandingPage() {
   const [signedIn, setSignedIn] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);\n  const [loggingOut, setLoggingOut] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
   useEffect(() => {
     let alive = true;
     void supabase?.auth.getSession().then(({ data }) => { if (alive) setSignedIn(Boolean(data.session)); });
     const { data } = supabase?.auth.onAuthStateChange((_event, session) => setSignedIn(Boolean(session))) ?? { data: { subscription: { unsubscribe: () => {} } } };
     return () => { alive = false; data.subscription.unsubscribe(); };
   }, []);
-  const reportHref = signedIn ? "/report" : "/login?next=/report";\n  async function logout() { if (!supabase) return; setLoggingOut(true); const { error } = await supabase.auth.signOut(); setLoggingOut(false); if (!error) setSignedIn(false); }
+  const reportHref = signedIn ? "/report" : "/login?next=/report";
+  async function logout() { if (!supabase) return; setLoggingOut(true); const { error } = await supabase.auth.signOut(); setLoggingOut(false); if (!error) setSignedIn(false); }
   return <main className="landing-shell">
     <header className="landing-nav">
       <Link href="/" className="brand"><span className="brand-mark"><MapPinned size={23}/></span><span><strong>FixMyRoad</strong><small>GIS · ROAD INTELLIGENCE</small></span></Link>
