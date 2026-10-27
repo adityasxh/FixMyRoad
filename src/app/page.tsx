@@ -2,19 +2,19 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { ArrowRight, MapPinned, ShieldCheck, Camera, LocateFixed, BarChart3, Menu, X, CircleCheck, Map, AlertTriangle, Clock3, UserRound } from "lucide-react";
+import { ArrowRight, MapPinned, ShieldCheck, Camera, LocateFixed, BarChart3, Menu, X, Map, AlertTriangle, UserRound, LogOut } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 
 export default function LandingPage() {
   const [signedIn, setSignedIn] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);\n  const [loggingOut, setLoggingOut] = useState(false);
   useEffect(() => {
     let alive = true;
     void supabase?.auth.getSession().then(({ data }) => { if (alive) setSignedIn(Boolean(data.session)); });
     const { data } = supabase?.auth.onAuthStateChange((_event, session) => setSignedIn(Boolean(session))) ?? { data: { subscription: { unsubscribe: () => {} } } };
     return () => { alive = false; data.subscription.unsubscribe(); };
   }, []);
-  const reportHref = signedIn ? "/report" : "/login?next=/report";
+  const reportHref = signedIn ? "/report" : "/login?next=/report";\n  async function logout() { if (!supabase) return; setLoggingOut(true); const { error } = await supabase.auth.signOut(); setLoggingOut(false); if (!error) setSignedIn(false); }
   return <main className="landing-shell">
     <header className="landing-nav">
       <Link href="/" className="brand"><span className="brand-mark"><MapPinned size={23}/></span><span><strong>FixMyRoad</strong><small>GIS · ROAD INTELLIGENCE</small></span></Link>
@@ -69,7 +69,7 @@ export default function LandingPage() {
     </section>
 
     <footer className="landing-footer">
-      <div className="footer-main"><Link href="/" className="brand"><span className="brand-mark"><MapPinned size={22}/></span><span><strong>FixMyRoad</strong><small>GIS · ROAD INTELLIGENCE</small></span></Link><p>Community reports. Geographic context. More transparent repair priorities.</p><div className="footer-links"><Link href="/dashboard">Explore reports</Link><Link href="/login">Sign in</Link><Link href="/register">Register</Link><Link href={reportHref}>Report a pothole</Link></div></div>
+      <div className="footer-main"><Link href="/" className="brand"><span className="brand-mark"><MapPinned size={22}/></span><span><strong>FixMyRoad</strong><small>GIS · ROAD INTELLIGENCE</small></span></Link><p>Community reports. Geographic context. More transparent repair priorities.</p><div className="footer-links"><Link href="/dashboard">Explore reports</Link>{signedIn ? <Link href="/account">My dashboard</Link> : <><Link href="/login">Sign in</Link><Link href="/register">Register</Link></>}<Link href={reportHref}>Report a pothole</Link></div></div>
       <div className="footer-bottom"><span>© {new Date().getFullYear()} FixMyRoad GIS · Wagholi, Pune pilot</span><span><ShieldCheck size={14}/> Reports are subject to review; submission does not guarantee repair.</span></div>
     </footer>
   </main>;
