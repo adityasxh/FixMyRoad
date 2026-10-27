@@ -32,3 +32,47 @@
 .account-shell{width:min(1120px,calc(100% - 40px));margin:0 auto}.account-nav{min-height:80px;display:flex;align-items:center;justify-content:space-between;gap:20px;border-bottom:1px solid var(--line)}.account-nav-actions{display:flex;align-items:center;gap:17px}.account-map-link{font-size:10px;font-weight:800;color:#42634e}.account-logout{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid #efd8d3;border-radius:9px;background:#fff;color:#a64636;padding:11px 13px;font-size:10px;font-weight:800;cursor:pointer}.account-logout:hover{background:#fff4f1}.account-logout:disabled{opacity:.65}.account-welcome{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:37px 0 25px}.account-welcome h1{font:800 clamp(28px,3.5vw,39px)/1.15 "Manrope",sans-serif;letter-spacing:-1.6px;margin:12px 0 8px}.account-welcome p{font-size:11px;line-height:1.8;color:var(--muted);margin:0}.account-welcome>.primary-cta{flex-shrink:0}.account-summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}.account-summary-grid>article{display:flex;align-items:center;gap:13px;padding:18px;border:1px solid var(--line);border-radius:13px;background:#fff}.account-summary-icon{width:40px;height:40px;display:grid;place-items:center;border-radius:11px;background:#e5f4eb;color:var(--green)}.account-orange{background:#fff0e4;color:#c67535}.account-blue{background:#e8f0ff;color:#3e6fb8}.account-summary-grid small{display:block;font-size:10px;color:var(--muted);font-weight:600}.account-summary-grid strong{display:block;margin-top:4px;font:800 25px "Manrope",sans-serif;letter-spacing:-.8px}.account-content-grid{display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);gap:15px;align-items:start;margin-top:16px}.account-panel{min-width:0;border:1px solid var(--line);border-radius:15px;background:#fff;padding:23px}.account-panel-heading{display:flex;align-items:center;gap:11px;margin-bottom:20px}.account-panel-icon{width:39px;height:39px;display:grid;place-items:center;border-radius:11px;background:#e5f4eb;color:var(--green);flex:0 0 auto}.account-panel-heading h2{font:800 15px "Manrope",sans-serif;margin:0 0 5px}.account-panel-heading p{font-size:9px;line-height:1.7;color:var(--muted);margin:0}.account-identity{display:flex;align-items:center;gap:12px;padding:14px;background:#f7faf7;border:1px solid #eaf0eb;border-radius:12px;margin-bottom:19px}.account-avatar{width:45px;height:45px;display:grid;place-items:center;flex:0 0 auto;border-radius:50%;background:var(--green);color:white;font:800 18px "Manrope",sans-serif}.account-identity>div{min-width:0}.account-identity strong,.account-identity span:not(.account-avatar){display:block;overflow-wrap:anywhere}.account-identity strong{font:800 12px "Manrope",sans-serif}.account-identity span:not(.account-avatar){font-size:10px;color:var(--muted);margin-top:4px}.account-identity small{display:flex;align-items:center;gap:5px;margin-top:6px;color:#43815a;font-size:9px;font-weight:700}.account-profile-form{display:grid;gap:13px}.account-profile-form label{display:grid;gap:6px;font-size:10px;font-weight:800;color:#34483b}.account-profile-form input,.account-profile-form select{width:100%;min-width:0;border:1px solid #dfe7e1;border-radius:9px;background:#fff;padding:11px;color:#20372a;font:500 11px "DM Sans",sans-serif;outline:none}.account-profile-form input:focus,.account-profile-form select:focus{border-color:#85b399;box-shadow:0 0 0 3px #176b4d10}.account-profile-form input:disabled{background:#f5f7f5;color:#7c8980}.account-save{display:flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:9px;background:var(--green);color:white;padding:12px;font-size:11px;font-weight:800;cursor:pointer}.account-save:disabled{opacity:.65;cursor:wait}.account-profile-note{font-size:9px;line-height:1.7;color:#89958d;margin:12px 0 0}.account-empty{display:flex;flex-direction:column;align-items:center;text-align:center;padding:35px 15px}.account-empty>span{width:48px;height:48px;display:grid;place-items:center;border-radius:14px;background:#e5f4eb;color:var(--green);margin-bottom:12px}.account-empty strong{font:800 13px "Manrope",sans-serif}.account-empty p{max-width:270px;font-size:10px;line-height:1.8;color:var(--muted);margin:8px 0 16px}.account-empty .secondary-cta{font-size:10px;padding:10px 12px}.account-report-list{display:grid}.account-report-row{display:flex;align-items:flex-start;gap:10px;padding:14px 0;border-bottom:1px solid #edf1ed}.account-report-row:first-child{padding-top:0}.account-report-row:last-child{border-bottom:0}.account-severity{width:30px;height:30px;display:grid;place-items:center;flex:0 0 auto;border-radius:9px;font:800 11px "Manrope",sans-serif}.account-severity.high{background:#fff0e4;color:#c36b2d}.account-severity.medium{background:#fff8df;color:#98781d}.account-severity.low{background:#e5f4eb;color:#287b53}.account-report-copy{flex:1;min-width:0}.account-report-copy strong{display:block;font-size:11px;overflow-wrap:anywhere}.account-report-copy>span{display:block;margin-top:4px;color:var(--muted);font-size:9px;line-height:1.6;overflow-wrap:anywhere}.account-report-copy small{display:flex;align-items:center;gap:5px;margin-top:7px;color:#89958d;font-size:9px}.account-report-status{text-align:right;flex:0 0 auto}.account-report-status span{display:inline-block;padding:5px 7px;border-radius:6px;background:#eef5ef;color:#3f7250;font-size:8px;font-weight:800;text-transform:capitalize}.account-report-status small{display:block;margin-top:6px;color:#87938b;font-size:8px;text-transform:capitalize}.account-panel-footer{display:flex;align-items:flex-start;gap:7px;border-top:1px solid #edf1ed;padding-top:14px;margin-top:13px;color:#7b8a80;font-size:9px;line-height:1.6}.account-panel-footer svg{flex:0 0 auto;color:var(--green)}.account-loading{min-height:65vh;display:flex;align-items:center;justify-content:center;gap:11px;color:var(--green);font-size:12px}.account-footer{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:22px 0;margin-top:24px;border-top:1px solid var(--line);color:#87938b;font-size:9px}.account-footer a{display:flex;align-items:center;gap:6px;color:#42634e;font-weight:700}
 @media(max-width:800px){.account-content-grid{grid-template-columns:1fr}.account-panel{padding:19px}.account-welcome{align-items:flex-start}.account-summary-grid>article{padding:14px}.account-summary-icon{width:35px;height:35px}.account-summary-grid strong{font-size:22px}}
 @media(max-width:560px){.account-shell{width:calc(100% - 24px)}.account-nav{min-height:70px}.account-nav-actions{gap:8px}.account-map-link{display:none}.account-logout{padding:9px;font-size:9px}.account-welcome{flex-direction:column;padding:29px 0 20px}.account-welcome>.primary-cta{width:100%}.account-summary-grid{gap:7px}.account-summary-grid>article{flex-direction:column;align-items:flex-start;gap:8px;padding:11px}.account-summary-grid small{font-size:9px;line-height:1.4}.account-summary-grid strong{font-size:21px}.account-panel{padding:15px}.account-report-row{gap:7px}.account-report-status{max-width:68px}.account-footer{align-items:flex-start;flex-direction:column;line-height:1.6}}
+
+/* Separate, spacious sign-in and registration pages */
+.auth-shell{width:min(calc(100% - 40px),860px);padding:28px 0 22px}
+.auth-card{padding:40px 32px;border-radius:24px}
+.auth-brand{gap:17px;margin-bottom:36px}
+.auth-brand .brand-mark{width:60px;height:60px;border-radius:19px}
+.auth-brand .brand-mark svg{width:30px;height:30px}
+.auth-brand strong{font-size:29px;letter-spacing:-.8px}
+.auth-brand small{font-size:12px;letter-spacing:1.7px;margin-top:5px}
+.auth-pill{padding:10px 15px;font-size:12px;gap:9px}
+.auth-pill svg{width:19px;height:19px}
+.auth-card h1{font-size:43px;letter-spacing:-1.8px;margin:28px 0 14px}
+.auth-intro{font-size:17px;line-height:1.65;margin-bottom:28px}
+.auth-form{gap:19px;margin-top:8px}
+.auth-form label{font-size:15px;gap:10px}
+.auth-form input{font-size:17px;padding:18px 20px;border-radius:15px}
+.auth-submit{padding:21px 24px;font-size:17px;border-radius:15px;min-height:72px}
+.auth-divider{font-size:12px;margin:36px 0 25px;gap:20px}
+.google-button{padding:21px 24px;border-radius:15px;font-size:17px;min-height:72px}
+.google-button-g{font-size:27px}
+.auth-benefits{gap:17px}
+.auth-benefits li{font-size:16px;gap:12px}
+.auth-benefits svg{width:22px;height:22px}
+.auth-disclaimer{font-size:13px;margin-top:27px}
+.auth-switch-link{text-align:center;color:var(--muted);font-size:13px;margin:20px 0 0}
+.auth-switch-link a{color:var(--green);font-weight:800;text-decoration:underline;text-underline-offset:3px}
+.auth-footer{font-size:12px}
+@media(max-width:600px){
+  .auth-shell{width:calc(100% - 24px);padding:12px 0 18px}
+  .auth-card{padding:24px 18px;border-radius:18px}
+  .auth-brand{margin-bottom:25px;gap:12px}
+  .auth-brand .brand-mark{width:48px;height:48px;border-radius:14px}
+  .auth-brand .brand-mark svg{width:24px;height:24px}
+  .auth-brand strong{font-size:22px}
+  .auth-brand small{font-size:9px;letter-spacing:1.1px}
+  .auth-card h1{font-size:32px;letter-spacing:-1.2px;margin:22px 0 10px}
+  .auth-intro{font-size:13px;margin-bottom:23px}
+  .auth-form label{font-size:12px;gap:7px}
+  .auth-form input{font-size:14px;padding:15px 14px;border-radius:11px}
+  .auth-submit,.google-button{min-height:56px;padding:15px;font-size:14px;border-radius:11px}
+  .auth-divider{font-size:10px;margin:26px 0 18px}
+  .auth-benefits li{font-size:12px}
+  .auth-disclaimer{font-size:10px}
+}
