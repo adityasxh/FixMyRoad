@@ -101,3 +101,11 @@
   .auth-benefits svg{width:18px;height:18px}
   .auth-disclaimer{font-size:10px;margin-top:20px}
 }
+
+/* Moderator severity review */
+.account-report-status{min-width:155px;display:grid;gap:8px}
+.account-report-status .report-field{margin:0;min-width:150px}
+.account-report-status .report-field select{width:100%;padding:9px;border:1px solid #dfe7e1;border-radius:8px;background:#fff;font:500 11px "DM Sans",sans-serif}
+.account-report-status .account-save{white-space:nowrap;padding:10px;font-size:10px}
+.account-report-copy .report-dashboard-link{display:inline-block;margin-top:8px;color:var(--green);font-size:10px;font-weight:800}
+@media(max-width:600px){.account-report-status{min-width:112px}.account-report-status .report-field{min-width:110px}.account-report-status .account-save{white-space:normal;padding:8px 6px}}
