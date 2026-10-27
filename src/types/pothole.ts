@@ -8,6 +8,14 @@ export interface PotholeReport {
   latitude: number;
   longitude: number;
   severity: number;
+  user_reported_severity?: number | null;
+  ai_assessed_severity?: number | null;
+  ai_confidence?: number | null;
+  ai_model?: string | null;
+  ai_assessment_status?: "pending" | "assessed" | "needs_review" | "failed" | "not_a_pothole";
+  ai_assessment_notes?: string | null;
+  verified_severity?: number | null;
+  severity_source?: "user_reported" | "ai_assessed" | "moderator_verified";
   traffic_level: number;
   photo_url: string | null;
   status: PotholeStatus;
