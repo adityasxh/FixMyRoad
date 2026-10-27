@@ -8,7 +8,7 @@ import { supabase } from "@/lib/supabase/client";
 export default function ReportPotholePage() {
   const router = useRouter();
   const [checking,setChecking] = useState(true), [userId,setUserId] = useState(""), [email,setEmail] = useState("");
-  const [title,setTitle] = useState("Pothole report"), [description,setDescription] = useState(""), [severity,setSeverity] = useState("3"), [traffic,setTraffic] = useState("3");
+  const [title,setTitle] = useState("Pothole report"), [description,setDescription] = useState(""), [traffic,setTraffic] = useState("3");
   const [photo,setPhoto] = useState<File|null>(null), [preview,setPreview] = useState("");
   const [coords,setCoords] = useState<{latitude:number;longitude:number;accuracy:number}|null>(null);
   const [locating,setLocating] = useState(false), [locationError,setLocationError] = useState(""), [busy,setBusy] = useState(false), [error,setError] = useState("");
@@ -61,7 +61,7 @@ export default function ReportPotholePage() {
       const photoUrl=supabase.storage.from("report-evidence").getPublicUrl(path).data.publicUrl;
       const {data:report,error:insertError}=await supabase.from("pothole_reports").insert({
         title:title.trim(),description:description.trim()||null,latitude:coords.latitude,longitude:coords.longitude,
-        severity:Number(severity),user_reported_severity:Number(severity),traffic_level:Number(traffic),photo_url:photoUrl,reporter_id:userId,
+        severity:3,traffic_level:Number(traffic),photo_url:photoUrl,reporter_id:userId,
         status:"open",verification_status:"unverified",source_type:"community",occurrence_count:1
       }).select("id").single();
       if(insertError) throw new Error("Could not save the report: "+insertError.message);
@@ -78,13 +78,13 @@ export default function ReportPotholePage() {
   if(checking) return <main className="report-shell"><div className="report-card report-centered"><LoaderCircle className="spin" size={25}/><p>Checking your account…</p></div></main>;
   return <main className="report-shell">
     <header className="report-topbar"><Link href="/" className="brand"><span className="brand-mark"><MapPinned size={22}/></span><span><strong>FixMyRoad</strong><small>REPORT A ROAD HAZARD</small></span></Link><Link href="/dashboard" className="report-dashboard-link">Explore reports</Link></header>
-    <div className="report-page-heading"><Link href="/" className="report-back"><ArrowLeft size={15}/> Back to home</Link><div className="landing-eyebrow"><span/> COMMUNITY REPORTING</div><h1>Report a pothole.</h1><p>Share a photo and capture your current GPS location to place the report on the map.</p></div>
+    <div className="report-page-heading"><Link href="/" className="report-back"><ArrowLeft size={15}/> Back to home</Link><div className="landing-eyebrow"><span/> COMMUNITY REPORTING</div><h1>Report a pothole.</h1><p>Share a photo and capture your current GPS location. Gemini assesses visible pothole severity from your photo.</p></div>
     <div className="report-content-grid">
       <form className="report-form-card" onSubmit={submit}>
         <div className="report-form-section-title"><span>01</span><div><h2>What did you find?</h2><p>Describe the road hazard clearly.</p></div></div>
         <label className="report-field">Report title<input value={title} onChange={e=>setTitle(e.target.value)} required maxLength={100} placeholder="e.g. Deep pothole near the junction"/></label>
         <label className="report-field">Description <span className="optional-label">Optional</span><textarea value={description} onChange={e=>setDescription(e.target.value)} maxLength={1000} rows={3} placeholder="Road name, landmark or other useful details…"/></label>
-        <div className="report-two-fields"><label className="report-field">Your severity estimate<select value={severity} onChange={e=>setSeverity(e.target.value)}><option value="1">1 · Low</option><option value="2">2 · Minor</option><option value="3">3 · Moderate</option><option value="4">4 · High</option><option value="5">5 · Critical</option></select><small className="optional-label">This is recorded separately; system assessment and moderator review are separate.</small></label><label className="report-field">Traffic importance<select value={traffic} onChange={e=>setTraffic(e.target.value)}><option value="1">1 · Very low</option><option value="2">2 · Low</option><option value="3">3 · Moderate</option><option value="4">4 · High</option><option value="5">5 · Very high</option></select></label></div>
+        <div className="report-two-fields"><label className="report-field">Traffic importance<select value={traffic} onChange={e=>setTraffic(e.target.value)}><option value="1">1 · Very low</option><option value="2">2 · Low</option><option value="3">3 · Moderate</option><option value="4">4 · High</option><option value="5">5 · Very high</option></select><small className="optional-label">Gemini determines pothole severity from the submitted photo.</small></label></div>
         <div className="report-form-divider"/>
         <div className="report-form-section-title"><span>02</span><div><h2>Add photo evidence</h2><p>Take a photo now or select one from your device.</p></div></div>
         <label className="photo-dropzone">
