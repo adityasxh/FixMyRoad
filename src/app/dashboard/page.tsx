@@ -42,7 +42,7 @@ export default function HomePage() {
   return <main className="app-shell">
     <header className="topbar">
       <a className="brand" href="/" aria-label="FixMyRoad home"><span className="brand-mark"><MapPinned size={23}/></span><span><strong>FixMyRoad</strong><small>GIS · ROAD INTELLIGENCE</small></span></a>
-      <div className="topbar-right"><span className="location-chip"><span className="live-dot"/>Wagholi, Pune</span><div className="header-actions"><Link className="signin-link" href="/auth"><UserRound size={15}/> Account</Link><a className="github-link" href="/report" className="signin-link"><MapPinned size={15}/> Report a pothole</a></div></div>
+      <div className="topbar-right"><span className="location-chip"><span className="live-dot"/>Wagholi, Pune</span><div className="header-actions"><Link className="signin-link" href="/auth"><UserRound size={15}/> Account</Link><Link href="/report" className="signin-link"><MapPinned size={15}/> Report a pothole</Link></div></div>
     </header>
     <section className="hero">
       <div className="hero-copy"><div className="eyebrow"><span/>COMMUNITY ROAD SAFETY</div><h1>Every safer street<br/>starts with <span>one report.</span></h1><p>A location-first view of road hazards in Wagholi. Explore reported potholes, understand urgency, and help make repair priorities more transparent.</p><div className="hero-note"><ShieldCheck size={17}/> Community insight · Data-led repair priorities</div></div>
