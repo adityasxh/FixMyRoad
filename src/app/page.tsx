@@ -25,8 +25,7 @@ export default function LandingPage() {
         <a href="#how-it-works" onClick={() => setMenuOpen(false)}>How it works</a>
         <a href="#features" onClick={() => setMenuOpen(false)}>Why FixMyRoad</a>
         <Link href="/dashboard" onClick={() => setMenuOpen(false)}>Explore reports</Link>
-        <Link className="nav-login" href="/login" onClick={() => setMenuOpen(false)}><UserRound size={15}/> Sign in</Link>
-        <Link className="nav-register" href="/register" onClick={() => setMenuOpen(false)}>Register <ArrowRight size={15}/></Link>
+        {signedIn ? <><Link className="nav-login" href="/account" onClick={() => setMenuOpen(false)}><UserRound size={15}/> My dashboard</Link><button className="nav-register nav-logout" type="button" disabled={loggingOut} onClick={() => { setMenuOpen(false); void logout(); }}><LogOut size={15}/>{loggingOut ? "Logging out…" : "Log out"}</button></> : <><Link className="nav-login" href="/login" onClick={() => setMenuOpen(false)}><UserRound size={15}/> Sign in</Link><Link className="nav-register" href="/register" onClick={() => setMenuOpen(false)}>Register <ArrowRight size={15}/></Link></>}
         <Link className="nav-report" href={reportHref} onClick={() => setMenuOpen(false)}><MapPinned size={15}/> Report a pothole</Link>
       </nav>
     </header>
@@ -71,7 +70,7 @@ export default function LandingPage() {
     </section>
 
     <footer className="landing-footer">
-      <div className="footer-main"><Link href="/" className="brand"><span className="brand-mark"><MapPinned size={22}/></span><span><strong>FixMyRoad</strong><small>GIS · ROAD INTELLIGENCE</small></span></Link><p>Community reports. Geographic context. More transparent repair priorities.</p><div className="footer-links"><Link href="/dashboard">Explore reports</Link>{signedIn ? <Link href="/account">My dashboard</Link> : <><Link href="/login">Sign in</Link><Link href="/register">Register</Link></>}<Link href={reportHref}>Report a pothole</Link></div></div>
+      <div className="footer-main"><Link href="/" className="brand"><span className="brand-mark"><MapPinned size={22}/></span><span><strong>FixMyRoad</strong><small>GIS · ROAD INTELLIGENCE</small></span></Link><p>Community reports. Geographic context. More transparent repair priorities.</p><div className="footer-links"><Link href="/dashboard">Explore reports</Link>{signedIn ? <Link href="/account">My dashboard</Link> : <>{signedIn ? <Link href="/account">My dashboard</Link> : <><Link href="/login">Sign in</Link><Link href="/register">Register</Link></>}</>}<Link href={reportHref}>Report a pothole</Link></div></div>
       <div className="footer-bottom"><span>© {new Date().getFullYear()} FixMyRoad GIS · Wagholi, Pune pilot</span><span><ShieldCheck size={14}/> Reports are subject to review; submission does not guarantee repair.</span></div>
     </footer>
   </main>;
