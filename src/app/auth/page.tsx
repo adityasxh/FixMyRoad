@@ -9,8 +9,7 @@ import { supabase } from "@/lib/supabase/client";
 export default function AuthPage() {
   const router = useRouter();
   const pathname = usePathname();
-  const [mode, setMode] = useState<"register" | "signin">("register");
-  useEffect(() => { setMode(pathname === "/login" ? "signin" : "register"); }, [pathname]);
+  const mode: "register" | "signin" = pathname === "/login" ? "signin" : "register";
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,12 +17,6 @@ export default function AuthPage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
-
-  function changeMode(next: "register" | "signin") {
-    setMode(next);
-    setError("");
-    setMessage("");
-  }
 
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -111,11 +104,6 @@ export default function AuthPage() {
             : "Sign in to continue reporting and tracking road hazards."}
         </p>
 
-        <div className="auth-tabs">
-          <button type="button" className={mode === "register" ? "auth-tab selected" : "auth-tab"} onClick={() => changeMode("register")}>Create account</button>
-          <button type="button" className={mode === "signin" ? "auth-tab selected" : "auth-tab"} onClick={() => changeMode("signin")}>Sign in</button>
-        </div>
-
         <form className="profile-form auth-form" onSubmit={submit}>
           {mode === "register" && (
             <label>Full name
@@ -148,13 +136,15 @@ export default function AuthPage() {
           Continue with Google
           <ArrowRight size={16} />
         </button>
-        <div className="auth-divider"><span>YOUR ACCOUNT</span></div>
-        <ul className="auth-benefits">
-          <li><ShieldCheck size={16} /> Reports linked to a signed-in account</li>
-          <li><ShieldCheck size={16} /> Contact details for moderator follow-up</li>
-          <li><ShieldCheck size={16} /> Better duplicate and abuse review</li>
-        </ul>
-        <p className="auth-disclaimer">Use a strong password you don't use elsewhere. Phone ownership is not verified unless a separate SMS verification step is added.</p>
+        {mode === "signin" && <>
+          <div className="auth-divider"><span>YOUR ACCOUNT</span></div>
+          <ul className="auth-benefits">
+            <li><ShieldCheck size={16} /> Reports linked to a signed-in account</li>
+            <li><ShieldCheck size={16} /> Contact details for moderator follow-up</li>
+            <li><ShieldCheck size={16} /> Better duplicate and abuse review</li>
+          </ul>
+          <p className="auth-disclaimer">Use a strong password you don't use elsewhere. Phone ownership is not verified unless a separate SMS verification step is added.</p>
+        </>}
       </section>
       <footer className="auth-footer">FixMyRoad GIS · Wagholi pilot</footer>
     </main>
