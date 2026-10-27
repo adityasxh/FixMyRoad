@@ -67,6 +67,9 @@ export default function ReportPotholePage() {
       if(insertError) throw new Error("Could not save the report: "+insertError.message);
       const {error:evidenceError}=await supabase.from("report_evidence").insert({report_id:report.id,photo_url:photoUrl,note:description.trim()||null});
       if(evidenceError) console.warn("Report saved but evidence metadata could not be saved:",evidenceError.message);
+      // The report is already saved. AI failure must not make submission appear to fail.
+      const {error:assessmentError}=await supabase.functions.invoke("assess-pothole-severity",{body:{reportId:report.id}});
+      if(assessmentError) console.warn("Report saved; AI severity assessment is pending or failed:",assessmentError.message);
       router.replace("/dashboard?submitted=1"); router.refresh();
     } catch(err) { setError(err instanceof Error?err.message:"Could not submit your report. Please try again."); }
     finally { setBusy(false); }
