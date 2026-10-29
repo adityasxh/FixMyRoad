@@ -32,11 +32,10 @@ export default function LandingPage() {
 
     <section className="landing-hero">
       <div className="landing-hero-copy">
-        <div className="landing-eyebrow"><span/> COMMUNITY-POWERED ROAD SAFETY <span className="pilot-chip">WAGHOLI PILOT</span></div>
         <h1>Better roads begin<br/>with <em>being heard.</em></h1>
         <p>Spot a pothole? Report it with a photo and your location. FixMyRoad GIS helps turn community reports into a clear, map-based priority list for road repair.</p>
         <div className="landing-cta-row"><Link href={reportHref} className="primary-cta"><Camera size={18}/> Report a pothole <ArrowRight size={17}/></Link><Link href="/dashboard" className="secondary-cta"><Map size={17}/> Explore the map</Link></div>
-        <div className="landing-trust"><span><ShieldCheck size={16}/> Sign-in required for reports</span><span><LocateFixed size={16}/> Location-aware submissions</span></div>
+        <div className="landing-trust"><span>Sign-in required for reports</span><span>Location-aware submissions</span></div>
       </div>
       <div className="landing-hero-art landing-engineer-art" aria-label="Floating cartoon civil engineer with a bridge blueprint">
         <div className="engineer-glow" aria-hidden="true"></div>
