@@ -208,3 +208,28 @@ html{scroll-behavior:smooth;scroll-padding-top:105px}
 .landing-shell .landing-nav a[href^="#"]{scroll-behavior:smooth}
 .landing-shell .landing-cta-row.reveal-on-scroll,.landing-shell .landing-trust.reveal-on-scroll,.landing-shell .landing-footer>div.reveal-on-scroll{transition:opacity .75s ease,filter .8s ease,transform .75s cubic-bezier(.2,.75,.25,1)}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+
+/* Site-wide polish for signed-in screens and workflows */
+:root{--app-glass:rgba(255,255,255,.78);--app-glass-border:rgba(255,255,255,.88);--app-glass-shadow:0 16px 42px rgba(25,66,43,.065)}
+.account-shell,.report-shell,.auth-shell{font-family:"Plus Jakarta Sans","DM Sans",sans-serif}
+.account-shell,.report-shell,.auth-shell,.app-shell{position:relative;isolation:isolate}
+.account-shell:before,.report-shell:before,.auth-shell:before,.app-shell:before{content:"";position:absolute;inset:0 -4vw auto;height:540px;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at 82% 8%,rgba(207,241,219,.55),transparent 46%),radial-gradient(ellipse at 8% 10%,rgba(233,245,236,.75),transparent 38%)}
+.account-panel,.account-summary-grid>*,.report-form-card,.report-side-card,.auth-card,.auth-benefits,.stat-card,.map-column,.queue-panel,.info-card,.bottom-grid>*{background:var(--app-glass);border-color:var(--app-glass-border);box-shadow:var(--app-glass-shadow),inset 0 1px rgba(255,255,255,.85);backdrop-filter:blur(16px) saturate(135%);-webkit-backdrop-filter:blur(16px) saturate(135%)}
+.account-panel,.report-form-card,.report-side-card,.auth-card,.auth-benefits,.stat-card,.map-column,.queue-panel,.info-card,.bottom-grid>*{border-radius:20px;transition:box-shadow .25s ease,border-color .25s ease,transform .25s ease}
+.account-panel:hover,.report-side-card:hover,.info-card:hover,.bottom-grid>*:hover{border-color:#c9e4d1;box-shadow:0 20px 46px rgba(23,107,77,.10),inset 0 1px #fff}
+.account-summary-grid>*{border-radius:17px}
+.account-report-row,.report-row{transition:background .22s ease,transform .22s ease,border-color .22s ease}
+.account-report-row:hover,.report-row:hover{background:rgba(238,248,241,.78);transform:translateY(-2px)}
+.account-shell input,.account-shell textarea,.report-shell input,.report-shell textarea,.report-shell select,.auth-shell input{border-radius:12px;transition:border-color .2s,box-shadow .2s,background .2s}
+.account-shell input:focus,.account-shell textarea:focus,.report-shell input:focus,.report-shell textarea:focus,.report-shell select:focus,.auth-shell input:focus{outline:none;border-color:#86b99a;box-shadow:0 0 0 4px rgba(23,107,77,.09)}
+.account-shell button,.report-shell button,.auth-shell button,.app-shell button{transition:transform .2s ease,box-shadow .2s ease,background .2s ease}
+.account-shell button:hover:not(:disabled),.report-shell button:hover:not(:disabled),.auth-shell button:hover:not(:disabled),.app-shell button:hover:not(:disabled){transform:translateY(-1px)}
+.account-nav,.report-topbar{border-color:rgba(220,233,223,.8)}
+.global-reveal{opacity:0;filter:blur(10px);transform:translateY(22px) scale(.99);transition:opacity .72s ease,filter .78s ease,transform .72s cubic-bezier(.2,.75,.25,1)}
+.global-reveal.is-visible{opacity:1;filter:blur(0);transform:translateY(0) scale(1)}
+.global-reveal:nth-child(2){transition-delay:.06s}
+.global-reveal:nth-child(3){transition-delay:.12s}
+.global-reveal:nth-child(4){transition-delay:.18s}
+@media(max-width:700px){.account-panel,.report-form-card,.report-side-card,.auth-card,.auth-benefits,.stat-card,.map-column,.queue-panel,.info-card,.bottom-grid>*{border-radius:16px}.global-reveal{filter:blur(7px);transform:translateY(16px)}}
+@media(prefers-reduced-motion:reduce){.global-reveal{opacity:1;filter:none;transform:none;transition:none!important}.account-panel,.report-side-card,.info-card,.bottom-grid>*{transition:none!important}}
