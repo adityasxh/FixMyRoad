@@ -196,3 +196,15 @@
 @media(max-width:900px){.landing-value-strip{grid-template-columns:repeat(2,minmax(0,1fr))}.landing-steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:560px){.landing-value-strip,.landing-steps{grid-template-columns:minmax(0,1fr)}.landing-value-strip>div,.landing-steps article{min-height:0}.landing-value-strip>div:hover,.landing-steps article:hover{transform:translateY(-4px) scale(1.005)}}
 @media(prefers-reduced-motion:reduce){.reveal-on-scroll{filter:none;opacity:1;transform:none;transition:none!important}}
+
+
+/* Final landing refinements: free-floating artwork, smooth anchor navigation, blur reveals */
+html{scroll-behavior:smooth;scroll-padding-top:105px}
+.landing-shell [id]{scroll-margin-top:105px}
+.landing-hero-art.landing-engineer-art{border:0!important;background:transparent!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;box-shadow:none!important;border-radius:0!important;overflow:visible}
+.landing-engineer-art .engineer-illustration{object-fit:contain;filter:drop-shadow(0 20px 26px #176b4d18) drop-shadow(0 0 26px #52bd8050)}
+.landing-engineer-art .engineer-glow{filter:blur(54px);opacity:.7}
+.landing-shell .landing-hero-art.reveal-on-scroll{transition:opacity .9s ease,filter .9s ease,transform .9s cubic-bezier(.2,.75,.25,1)}
+.landing-shell .landing-nav a[href^="#"]{scroll-behavior:smooth}
+.landing-shell .landing-cta-row.reveal-on-scroll,.landing-shell .landing-trust.reveal-on-scroll,.landing-shell .landing-footer>div.reveal-on-scroll{transition:opacity .75s ease,filter .8s ease,transform .75s cubic-bezier(.2,.75,.25,1)}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
