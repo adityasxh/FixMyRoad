@@ -64,7 +64,7 @@ export default function ModeratorReviewPage() {
   if (loading) return <main className="account-shell"><div className="account-loading"><LoaderCircle size={24} className="spin" /> Loading review queue…</div></main>;
 
   return <main className="account-shell">
-    <header className="account-nav"><Link href="/" className="brand"><span className="brand-mark"><ShieldCheck size={22}/></span><span><strong>FixMyRoad</strong><small>MODERATOR REVIEW</small></span></Link><div className="account-nav-actions"><Link href="/dashboard" className="account-map-link">Public dashboard</Link><Link href="/" className="account-map-link">Home</Link></div></header>
+    <header className="account-nav"><Link href="/" className="brand"><span className="brand-mark"><img src="/fixmyroad-logo.svg" alt="" /></span><span><strong>FixMyRoad</strong><small>MODERATOR REVIEW</small></span></Link><div className="account-nav-actions"><Link href="/dashboard" className="account-map-link">Public dashboard</Link><Link href="/" className="account-map-link">Home</Link></div></header>
     <section className="account-welcome"><div><div className="landing-eyebrow"><span/> HUMAN VERIFICATION</div><h1>Severity review queue.</h1><p>Compare the reported estimate with the photo assessment, inspect the evidence, then confirm a severity.</p></div></section>
     {error && <div className="auth-error" role="alert">{error}</div>}
     {notice && <div className="auth-success" role="status">{notice}</div>}
