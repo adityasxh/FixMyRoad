@@ -13,15 +13,18 @@ export default function LandingPage() {
     let alive = true;
     void supabase?.auth.getSession().then(({ data }) => { if (alive) setSignedIn(Boolean(data.session)); });
     const { data } = supabase?.auth.onAuthStateChange((_event, session) => setSignedIn(Boolean(session))) ?? { data: { subscription: { unsubscribe: () => {} } } };
-    return () => { alive = false; data.subscription.unsubscribe(); };
     const revealItems = document.querySelectorAll(".landing-shell .landing-hero-copy, .landing-shell .landing-hero-art, .landing-shell .landing-value-strip > div, .landing-shell .landing-section-head, .landing-shell .landing-steps article, .landing-shell .landing-callout, .landing-shell .landing-footer");
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduceMotion || !("IntersectionObserver" in window)) { revealItems.forEach((item) => item.classList.add("is-visible")); }
-    else {
-      const observer = new IntersectionObserver((entries) => entries.forEach((entry) => { if (entry.isIntersecting) { entry.target.classList.add("is-visible"); observer.unobserve(entry.target); } }), { threshold: 0.12, rootMargin: "0px 0px -35px 0px" });
-      revealItems.forEach((item) => { item.classList.add("reveal-on-scroll"); observer.observe(item); });
-      return () => { alive = false; data.subscription.unsubscribe(); observer.disconnect(); };
+    let observer: IntersectionObserver | undefined;
+    if (reduceMotion || !("IntersectionObserver" in window)) {
+      revealItems.forEach((item) => item.classList.add("is-visible"));
+    } else {
+      observer = new IntersectionObserver((entries) => entries.forEach((entry) => {
+        if (entry.isIntersecting) { entry.target.classList.add("is-visible"); observer?.unobserve(entry.target); }
+      }), { threshold: 0.12, rootMargin: "0px 0px -35px 0px" });
+      revealItems.forEach((item) => { item.classList.add("reveal-on-scroll"); observer?.observe(item); });
     }
+    return () => { alive = false; data.subscription.unsubscribe(); observer?.disconnect(); };
   }, []);
   const reportHref = signedIn ? "/report" : "/login?next=/report";
   async function logout() { if (!supabase) return; setLoggingOut(true); const { error } = await supabase.auth.signOut(); setLoggingOut(false); if (!error) setSignedIn(false); }
