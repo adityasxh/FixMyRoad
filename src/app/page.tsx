@@ -13,7 +13,7 @@ export default function LandingPage() {
     let alive = true;
     void supabase?.auth.getSession().then(({ data }) => { if (alive) setSignedIn(Boolean(data.session)); });
     const { data } = supabase?.auth.onAuthStateChange((_event, session) => setSignedIn(Boolean(session))) ?? { data: { subscription: { unsubscribe: () => {} } } };
-    const revealItems = document.querySelectorAll(".landing-shell .landing-hero-copy, .landing-shell .landing-hero-art, .landing-shell .landing-value-strip > div, .landing-shell .landing-section-head, .landing-shell .landing-steps article, .landing-shell .landing-callout, .landing-shell .landing-footer");
+    const revealItems = document.querySelectorAll(".landing-shell .landing-hero-copy, .landing-shell .landing-hero-art, .landing-shell .landing-cta-row, .landing-shell .landing-trust, .landing-shell .landing-value-strip > div, .landing-shell .landing-section-head, .landing-shell .landing-steps article, .landing-shell .landing-callout, .landing-shell .landing-footer > div");
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let observer: IntersectionObserver | undefined;
     if (reduceMotion || !("IntersectionObserver" in window)) {
