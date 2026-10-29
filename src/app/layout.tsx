@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "leaflet/dist/leaflet.css";
 import "./globals.css";
+import GlobalMotion from "@/components/GlobalMotion";
 
 export const metadata: Metadata = {
   title: "FixMyRoad GIS | Pothole reporting and prioritization",
@@ -13,7 +14,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body><GlobalMotion />{children}</body>
     </html>
   );
 }
