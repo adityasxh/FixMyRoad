@@ -112,7 +112,7 @@ export default function AuthPage() {
       <Link href="/" className="auth-back"><ArrowLeft size={15} /> Back to dashboard</Link>
       <section className="auth-card">
         <div className="auth-brand">
-          <span className="brand-mark"><MapPinned size={23} /></span>
+          <span className="brand-mark"><img src="/fixmyroad-logo.svg" alt="" /></span>
           <div><strong>FixMyRoad</strong><small>COMMUNITY ROAD SAFETY</small></div>
         </div>
         <div className="auth-pill"><ShieldCheck size={14} /> ACCOUNTABILITY STARTS HERE</div>
