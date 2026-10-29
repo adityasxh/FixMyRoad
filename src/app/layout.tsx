@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: "FixMyRoad GIS | Pothole reporting and prioritization",
   description:
     "Report road potholes, explore their locations, and prioritize repairs using geographic data.",
+  icons: { icon: "/fixmyroad-logo.svg", shortcut: "/fixmyroad-logo.svg" },
 };
 
 export default function RootLayout({
