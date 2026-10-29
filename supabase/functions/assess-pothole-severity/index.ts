@@ -44,39 +44,48 @@ Deno.serve(async (req: Request) => {
   if (userError || !user) return json({ error: "Your session is invalid or expired." }, 401);
 
   let reportId = "";
+  let submittedPhotoUrl = "";
   try {
     const body = await req.json();
     reportId = typeof body?.reportId === "string" ? body.reportId : "";
+    submittedPhotoUrl = typeof body?.photoUrl === "string" ? body.photoUrl : "";
   } catch {
-    return json({ error: "A valid reportId is required." }, 400);
+    return json({ error: "Provide a valid reportId or photoUrl." }, 400);
   }
-  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(reportId)) {
-    return json({ error: "A valid reportId is required." }, 400);
+  const preflight = !reportId && Boolean(submittedPhotoUrl);
+  if (!preflight && !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(reportId)) {
+    return json({ error: "A valid reportId or photoUrl is required." }, 400);
   }
 
   const admin = createClient(supabaseUrl, serviceRoleKey, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
-  const { data: report, error: reportError } = await admin
-    .from("pothole_reports")
-    .select("id,reporter_id,photo_url,verified_severity")
-    .eq("id", reportId)
-    .maybeSingle();
-
-  if (reportError || !report) return json({ error: "Report not found." }, 404);
-  const isModerator = user.app_metadata?.role === "moderator";
-  if (report.reporter_id !== user.id && !isModerator) return json({ error: "You may only assess your own reports." }, 403);
-  if (report.verified_severity !== null) {
-    return json({ ok: true, skipped: true, message: "A moderator-verified severity already exists." });
+  let report: { id: string; reporter_id: string; photo_url: string; verified_severity: number | null } | null = null;
+  if (!preflight) {
+    const { data, error: reportError } = await admin
+      .from("pothole_reports")
+      .select("id,reporter_id,photo_url,verified_severity")
+      .eq("id", reportId)
+      .maybeSingle();
+    report = data;
+    if (reportError || !report) return json({ error: "Report not found." }, 404);
+    const isModerator = user.app_metadata?.role === "moderator";
+    if (report.reporter_id !== user.id && !isModerator) return json({ error: "You may only assess your own reports." }, 403);
+    if (report.verified_severity !== null) {
+      return json({ ok: true, skipped: true, message: "A moderator-verified severity already exists." });
+    }
   }
 
   try {
     // Restrict image fetching to this project's public evidence bucket to prevent SSRF.
-    const imageUrl = new URL(report.photo_url);
+    const imageUrl = new URL(preflight ? submittedPhotoUrl : report!.photo_url);
     const expectedHost = new URL(supabaseUrl).host;
     const prefix = "/storage/v1/object/public/report-evidence/";
     if (imageUrl.protocol !== "https:" || imageUrl.host !== expectedHost || !imageUrl.pathname.startsWith(prefix)) {
       throw new Error("The report photo is not in the approved evidence bucket.");
+    }
+    if (preflight && !imageUrl.pathname.startsWith(prefix + user.id + "/")) {
+      return json({ error: "You may only validate a photo uploaded to your own account folder." }, 403);
     }
 
     const imageResponse = await fetch(imageUrl.toString(), { signal: AbortSignal.timeout(15000) });
@@ -141,6 +150,22 @@ Severity guide: 1=minor surface defect; 2=small/shallow visible pothole; 3=moder
     const notes = typeof result.reason === "string" ? result.reason.trim().slice(0, 500) : "No explanation provided.";
     const needsReview = result.needs_human_review === true || confidence < 0.7 || !detected;
     const status = !detected ? "not_a_pothole" : needsReview ? "needs_review" : "assessed";
+
+    // Preflight validates the uploaded image before a report is created.
+    if (preflight) {
+      return json({
+        ok: true,
+        preflight: true,
+        pothole_detected: detected,
+        ai_assessment_status: status,
+        ai_assessed_severity: detected ? severity : null,
+        ai_confidence: confidence,
+        ai_model: `groq/${model}`,
+        needs_human_review: needsReview,
+        reason: notes,
+      });
+    }
+
     const { error: updateError } = await admin.from("pothole_reports").update({
       ai_assessed_severity: detected ? severity : null,
       ai_confidence: confidence,
@@ -150,7 +175,7 @@ Severity guide: 1=minor surface defect; 2=small/shallow visible pothole; 3=moder
     }).eq("id", reportId);
     if (updateError) throw new Error("Assessment was generated but could not be saved.");
 
-    return json({ ok: true, reportId, ai_assessment_status: status, ai_assessed_severity: detected ? severity : null, ai_confidence: confidence, needs_human_review: needsReview, reason: notes });
+    return json({ ok: true, reportId, pothole_detected: detected, ai_assessment_status: status, ai_assessed_severity: detected ? severity : null, ai_confidence: confidence, needs_human_review: needsReview, reason: notes });
   } catch (error) {
     const message = error instanceof Error ? error.message : "AI assessment failed.";
     console.error("Pothole assessment failed:", message);
