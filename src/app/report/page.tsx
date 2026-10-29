@@ -59,17 +59,30 @@ export default function ReportPotholePage() {
       const {error:uploadError}=await supabase.storage.from("report-evidence").upload(path,photo,{contentType:photo.type,upsert:false});
       if(uploadError) throw new Error("Photo upload failed: "+uploadError.message);
       const photoUrl=supabase.storage.from("report-evidence").getPublicUrl(path).data.publicUrl;
+
+      // Validate the image before creating a public report, so unrelated photos never enter the map or priority queue.
+      const {data:assessment,error:assessmentError}=await supabase.functions.invoke("assess-pothole-severity",{body:{photoUrl}});
+      if(assessmentError) throw new Error(assessmentError.message||"We couldn't verify this photo. Please try again.");
+      if(assessment?.error) throw new Error(String(assessment.error));
+      if(assessment?.pothole_detected !== true) {
+        await supabase.storage.from("report-evidence").remove([path]);
+        setError("This photo doesn't appear to show a pothole. Please upload a clear photo of the pothole on the road. No report was submitted.");
+        return;
+      }
+
       const {data:report,error:insertError}=await supabase.from("pothole_reports").insert({
         title:title.trim(),description:description.trim()||null,latitude:coords.latitude,longitude:coords.longitude,
-        severity:3,traffic_level:Number(traffic),photo_url:photoUrl,reporter_id:userId,
-        status:"open",verification_status:"unverified",source_type:"community",occurrence_count:1
+        severity:assessment.ai_assessed_severity ?? 3,traffic_level:Number(traffic),photo_url:photoUrl,reporter_id:userId,
+        status:"open",verification_status:"unverified",source_type:"community",occurrence_count:1,
+        ai_assessed_severity:assessment.ai_assessed_severity,
+        ai_confidence:assessment.ai_confidence,
+        ai_model:assessment.ai_model,
+        ai_assessment_status:assessment.ai_assessment_status,
+        ai_assessment_notes:assessment.reason
       }).select("id").single();
       if(insertError) throw new Error("Could not save the report: "+insertError.message);
       const {error:evidenceError}=await supabase.from("report_evidence").insert({report_id:report.id,photo_url:photoUrl,note:description.trim()||null});
       if(evidenceError) console.warn("Report saved but evidence metadata could not be saved:",evidenceError.message);
-      // The report is already saved. AI failure must not make submission appear to fail.
-      const {error:assessmentError}=await supabase.functions.invoke("assess-pothole-severity",{body:{reportId:report.id}});
-      if(assessmentError) console.warn("Report saved; AI severity assessment is pending or failed:",assessmentError.message);
       router.replace("/dashboard?submitted=1"); router.refresh();
     } catch(err) { setError(err instanceof Error?err.message:"Could not submit your report. Please try again."); }
     finally { setBusy(false); }
