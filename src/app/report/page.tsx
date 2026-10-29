@@ -106,10 +106,10 @@ export default function ReportPotholePage() {
         </label>
         {photo && <div className="selected-photo"><CheckCircle2 size={15}/><span>{photo.name}</span><button type="button" onClick={()=>{setPhoto(null);setPreview("");}} aria-label="Remove selected photo"><X size={15}/></button></div>}
         <div className="report-form-divider"/>
-        <div className="report-form-section-title"><span>03</span><div><h2>Capture current location</h2><p>Request your device's current GPS position.</p></div></div>
+        <div className="report-form-section-title"><span>03</span><div><h2>Capture current location</h2><p>Request your device&apos;s current GPS position.</p></div></div>
         <div className={coords?"gps-panel gps-ready":"gps-panel"}><span className="gps-icon"><LocateFixed size={22}/></span><div className="gps-copy"><strong>{coords?"Location captured":"Current GPS location required"}</strong><p>{coords ? coords.latitude.toFixed(6)+", "+coords.longitude.toFixed(6)+" · accuracy ±"+Math.round(coords.accuracy)+" m" : "Allow location access to attach your current coordinates."}</p></div><button type="button" className="gps-button" onClick={locate} disabled={locating}>{locating?<LoaderCircle size={16} className="spin"/>:<LocateFixed size={16}/>} {locating?"Locating…":coords?"Refresh GPS":"Use my location"}</button></div>
         {locationError&&<p className="location-error" role="alert">{locationError}</p>}
-        <p className="location-note"><ShieldCheck size={14}/> High-accuracy browser geolocation is requested. GPS accuracy varies by device and surroundings; don't step into traffic to take a photo.</p>
+        <p className="location-note"><ShieldCheck size={14}/> High-accuracy browser geolocation is requested. GPS accuracy varies by device and surroundings; don&apos;t step into traffic to take a photo.</p>
         {error&&<div className="auth-error" role="alert">{error}</div>}
         <button className="report-submit-button" type="submit" disabled={busy||!userId}>{busy?<><LoaderCircle size={18} className="spin"/> Submitting report…</>:<><MapPinned size={18}/> Submit pothole report <ArrowRight size={17}/></>}</button>
         <p className="report-submit-note">Submitting as <strong>{email}</strong>. Your report stays unverified until reviewed.</p>
