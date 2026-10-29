@@ -53,8 +53,10 @@ export default function LandingPage() {
         <img
           className="engineer-illustration"
           src="/engineer.png"
+          loading="eager"
           alt="Cheerful cartoon engineer in an orange hard hat presenting a bridge and road blueprint"
           fetchPriority="high"
+          decoding="async"
         />
         <span className="engineer-art-spark engineer-spark-one" aria-hidden="true"></span>
         <span className="engineer-art-spark engineer-spark-two" aria-hidden="true"></span>
