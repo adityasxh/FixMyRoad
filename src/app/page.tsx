@@ -52,7 +52,7 @@ export default function LandingPage() {
         <div className="engineer-glow" aria-hidden="true"></div>
         <img
           className="engineer-illustration"
-          src="/engineer.svg"
+          src="/engineer.png"
           loading="eager"
           alt="Cheerful cartoon engineer in an orange hard hat presenting a bridge and road blueprint"
           fetchPriority="high"
