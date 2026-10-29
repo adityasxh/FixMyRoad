@@ -41,7 +41,7 @@ export default function HomePage() {
 
   return <main className="app-shell">
     <header className="topbar">
-      <a className="brand" href="/" aria-label="FixMyRoad home"><span className="brand-mark"><img src="/fixmyroad-logo.svg" alt="" /></span><span><strong>FixMyRoad</strong><small>GIS · ROAD INTELLIGENCE</small></span></a>
+      <Link className="brand" href="/" aria-label="FixMyRoad home"><span className="brand-mark"><img src="/fixmyroad-logo.svg" alt="" /></span><span><strong>FixMyRoad</strong><small>GIS · ROAD INTELLIGENCE</small></span></Link>
       <div className="topbar-right"><span className="location-chip"><span className="live-dot"/>Wagholi, Pune</span><div className="header-actions"><Link className="signin-link" href="/auth"><UserRound size={15}/> Account</Link><Link href="/report" className="signin-link"><MapPinned size={15}/> Report a pothole</Link></div></div>
     </header>
     <section className="hero">
