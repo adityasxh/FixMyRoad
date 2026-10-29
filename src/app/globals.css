@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
 :root{--ink:#14251e;--muted:#6e7c75;--line:#e4eae5;--surface:#fff;--canvas:#f5f7f4;--green:#176b4d;--mint:#e5f4eb;--orange:#d97736}
 *{box-sizing:border-box}html{min-height:100%;background:var(--canvas)}body{margin:0;color:var(--ink);font-family:"DM Sans",sans-serif;background:var(--canvas)}a{color:inherit;text-decoration:none}button,input{font:inherit}
-.app-shell{width:min(1280px,calc(100% - 48px));margin:0 auto}.topbar{height:82px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}.brand{display:flex;align-items:center;gap:11px}.brand-mark{width:43px;height:43px;display:grid;place-items:center;background:var(--green);color:white;border-radius:13px;box-shadow:0 5px 12px #176b4d20}.brand strong{display:block;font:800 19px "Manrope",sans-serif;letter-spacing:-.6px}.brand small{display:block;margin-top:2px;color:var(--muted);font-size:9px;font-weight:700;letter-spacing:1.3px}.topbar-right{display:flex;align-items:center;gap:24px}.location-chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 13px;font-size:12px;color:#42574b;display:flex;align-items:center;gap:8px}.live-dot,.eyebrow span,.connection-indicator{width:7px;height:7px;display:inline-block;background:#27986d;border-radius:50%}.github-link{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:700}
+.app-shell{width:min(1280px,calc(100% - 48px));margin:0 auto}.topbar{height:82px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}.brand{display:flex;align-items:center;gap:11px}.brand-mark{width:48px;height:48px;flex:0 0 auto;display:grid;place-items:center;background:transparent;border-radius:0;box-shadow:none;overflow:visible}.brand-mark img{display:block;width:100%;height:100%;object-fit:contain}.brand strong{display:block;font:800 19px "Manrope",sans-serif;letter-spacing:-.6px}.brand small{display:block;margin-top:2px;color:var(--muted);font-size:9px;font-weight:700;letter-spacing:1.3px}.topbar-right{display:flex;align-items:center;gap:24px}.location-chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 13px;font-size:12px;color:#42574b;display:flex;align-items:center;gap:8px}.live-dot,.eyebrow span,.connection-indicator{width:7px;height:7px;display:inline-block;background:#27986d;border-radius:50%}.github-link{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:700}
 .hero{display:flex;justify-content:space-between;align-items:center;padding:43px 0 34px;gap:32px}.eyebrow{display:flex;gap:9px;align-items:center;color:var(--green);font-size:10px;font-weight:800;letter-spacing:1.5px}.hero h1{font:800 clamp(32px,4.2vw,49px)/1.12 "Manrope",sans-serif;letter-spacing:-2.3px;margin:16px 0 13px}.hero h1 span{color:var(--green)}.hero-copy>p{max-width:650px;color:var(--muted);font-size:14px;line-height:1.8;margin:0}.hero-note{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:#527062;margin-top:19px}.hero-stamp{width:245px;min-width:245px;border:1px solid #dce9df;background:linear-gradient(145deg,#fff,#eef7f0);border-radius:20px;padding:19px 21px;display:flex;flex-direction:column;box-shadow:0 10px 30px #24473308}.stamp-icon{width:40px;height:40px;color:var(--green);background:var(--mint);border-radius:12px;display:grid;place-items:center;margin-bottom:15px}.stamp-label{font-size:9px;letter-spacing:1.5px;font-weight:800;color:#779085}.hero-stamp strong{font:800 23px "Manrope",sans-serif;margin-top:5px;letter-spacing:-.7px}.stamp-sub{font-size:11px;color:var(--muted);margin-top:4px}.pilot-status{display:flex;align-items:center;gap:7px;font-size:10px;font-weight:700;color:#397454;margin-top:15px;border-top:1px solid #dce9df;padding-top:12px}
 .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.stat-card{position:relative;display:flex;gap:15px;align-items:flex-start;padding:19px 21px;border:1px solid var(--line);background:var(--surface);border-radius:15px;overflow:hidden}.stat-icon{display:grid;place-items:center;width:41px;height:41px;border-radius:12px;flex:0 0 auto}.stat-icon-blue{background:#e8f0ff;color:#3e6fb8}.stat-icon-orange{background:#fff0e4;color:#d97736}.stat-icon-green{background:#e5f4eb;color:#1f855f}.stat-label{display:block;font-size:11px;color:var(--muted);font-weight:600}.stat-card strong{display:block;font:800 28px "Manrope",sans-serif;letter-spacing:-1px;margin:2px 0}.stat-card small{display:block;font-size:10px;color:#88958d}.stat-corner{margin-left:auto;color:#d4ded7;font:700 11px "Manrope",sans-serif}
 .workspace{margin-top:34px}.section-heading{display:flex;align-items:end;justify-content:space-between;margin-bottom:15px;gap:20px}.section-kicker{font-size:9px;font-weight:800;letter-spacing:1.55px;color:var(--green)}.section-heading h2{font:800 25px "Manrope",sans-serif;letter-spacing:-.8px;margin:5px 0 4px}.section-heading p{margin:0;color:var(--muted);font-size:12px}.refresh-button{border:1px solid #dce7df;background:#fff;color:#295b43;border-radius:9px;padding:10px 13px;display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;cursor:pointer}.refresh-button:hover{background:#f0f7f2;border-color:#b8d2c1}.refresh-button:disabled{opacity:.6;cursor:wait}.spin{animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
@@ -37,8 +37,8 @@
 .auth-shell{width:min(calc(100% - 40px),860px);padding:28px 0 22px}
 .auth-card{padding:40px 32px;border-radius:24px}
 .auth-brand{gap:17px;margin-bottom:36px}
-.auth-brand .brand-mark{width:60px;height:60px;border-radius:19px}
-.auth-brand .brand-mark svg{width:30px;height:30px}
+.auth-brand .brand-mark{width:60px;height:60px;border-radius:0}
+.auth-brand .brand-mark img{width:100%;height:100%}
 .auth-brand strong{font-size:29px;letter-spacing:-.8px}
 .auth-brand small{font-size:12px;letter-spacing:1.7px;margin-top:5px}
 .auth-pill{padding:10px 15px;font-size:12px;gap:9px}
@@ -63,8 +63,8 @@
   .auth-shell{width:calc(100% - 24px);padding:12px 0 18px}
   .auth-card{padding:24px 18px;border-radius:18px}
   .auth-brand{margin-bottom:25px;gap:12px}
-  .auth-brand .brand-mark{width:48px;height:48px;border-radius:14px}
-  .auth-brand .brand-mark svg{width:24px;height:24px}
+  .auth-brand .brand-mark{width:48px;height:48px;border-radius:0}
+  .auth-brand .brand-mark img{width:100%;height:100%}
   .auth-brand strong{font-size:22px}
   .auth-brand small{font-size:9px;letter-spacing:1.1px}
   .auth-card h1{font-size:32px;letter-spacing:-1.2px;margin:22px 0 10px}
@@ -82,8 +82,8 @@
   .auth-shell{width:min(calc(100% - 40px),760px);padding-top:24px}
   .auth-card{padding:32px 30px;border-radius:22px}
   .auth-brand{margin-bottom:27px;gap:13px}
-  .auth-brand .brand-mark{width:52px;height:52px;border-radius:16px}
-  .auth-brand .brand-mark svg{width:26px;height:26px}
+  .auth-brand .brand-mark{width:52px;height:52px;border-radius:0}
+  .auth-brand .brand-mark img{width:100%;height:100%}
   .auth-brand strong{font-size:25px}
   .auth-brand small{font-size:10px;letter-spacing:1.4px}
   .auth-pill{padding:8px 12px;font-size:10px}
