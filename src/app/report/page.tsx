@@ -77,7 +77,7 @@ export default function ReportPotholePage() {
 
   if(checking) return <main className="report-shell"><div className="report-card report-centered"><LoaderCircle className="spin" size={25}/><p>Checking your account…</p></div></main>;
   return <main className="report-shell">
-    <header className="report-topbar"><Link href="/" className="brand"><span className="brand-mark"><MapPinned size={22}/></span><span><strong>FixMyRoad</strong><small>REPORT A ROAD HAZARD</small></span></Link><Link href="/dashboard" className="report-dashboard-link">Explore reports</Link></header>
+    <header className="report-topbar"><Link href="/" className="brand"><span className="brand-mark"><img src="/fixmyroad-logo.svg" alt="" /></span><span><strong>FixMyRoad</strong><small>REPORT A ROAD HAZARD</small></span></Link><Link href="/dashboard" className="report-dashboard-link">Explore reports</Link></header>
     <div className="report-page-heading"><Link href="/" className="report-back"><ArrowLeft size={15}/> Back to home</Link><div className="landing-eyebrow"><span/> COMMUNITY REPORTING</div><h1>Report a pothole.</h1><p>Share a photo and capture your current GPS location to help assess the pothole’s severity.</p></div>
     <div className="report-content-grid">
       <form className="report-form-card" onSubmit={submit}>
