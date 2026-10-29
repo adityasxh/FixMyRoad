@@ -14,11 +14,19 @@ export default function LandingPage() {
     void supabase?.auth.getSession().then(({ data }) => { if (alive) setSignedIn(Boolean(data.session)); });
     const { data } = supabase?.auth.onAuthStateChange((_event, session) => setSignedIn(Boolean(session))) ?? { data: { subscription: { unsubscribe: () => {} } } };
     return () => { alive = false; data.subscription.unsubscribe(); };
+    const revealItems = document.querySelectorAll(".landing-shell .landing-hero-copy, .landing-shell .landing-hero-art, .landing-shell .landing-value-strip > div, .landing-shell .landing-section-head, .landing-shell .landing-steps article, .landing-shell .landing-callout, .landing-shell .landing-footer");
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion || !("IntersectionObserver" in window)) { revealItems.forEach((item) => item.classList.add("is-visible")); }
+    else {
+      const observer = new IntersectionObserver((entries) => entries.forEach((entry) => { if (entry.isIntersecting) { entry.target.classList.add("is-visible"); observer.unobserve(entry.target); } }), { threshold: 0.12, rootMargin: "0px 0px -35px 0px" });
+      revealItems.forEach((item) => { item.classList.add("reveal-on-scroll"); observer.observe(item); });
+      return () => { alive = false; data.subscription.unsubscribe(); observer.disconnect(); };
+    }
   }, []);
   const reportHref = signedIn ? "/report" : "/login?next=/report";
   async function logout() { if (!supabase) return; setLoggingOut(true); const { error } = await supabase.auth.signOut(); setLoggingOut(false); if (!error) setSignedIn(false); }
   return <main className="landing-shell">
-    <header className="landing-nav">
+    <header className="landing-nav landing-nav-glass">
       <Link href="/" className="brand"><span className="brand-mark"><MapPinned size={23}/></span><span><strong>FixMyRoad</strong><small>GIS · ROAD INTELLIGENCE</small></span></Link>
       <button className="mobile-menu-toggle" aria-label="Toggle navigation" onClick={() => setMenuOpen(v => !v)}>{menuOpen ? <X size={21}/> : <Menu size={21}/>}</button>
       <nav className={menuOpen ? "landing-nav-links open" : "landing-nav-links"}>
@@ -30,7 +38,7 @@ export default function LandingPage() {
       </nav>
     </header>
 
-    <section className="landing-hero">
+    <section className="landing-hero landing-glass-section">
       <div className="landing-hero-copy">
         <h1>Better roads begin<br/>with <em>being heard.</em></h1>
         <p>Spot a pothole? Report it with a photo and your location. FixMyRoad GIS helps turn community reports into a clear, map-based priority list for road repair.</p>
@@ -50,14 +58,14 @@ export default function LandingPage() {
       </div>
     </section>
 
-    <section className="landing-value-strip" id="features">
+    <section className="landing-value-strip landing-glass-section" id="features">
       <div><span className="value-icon"><Camera size={19}/></span><strong>Photo evidence</strong><p>Capture a new photo or upload one already taken.</p></div>
       <div><span className="value-icon"><LocateFixed size={19}/></span><strong>Location matters</strong><p>Use your device location to place the report on the map.</p></div>
       <div><span className="value-icon"><BarChart3 size={19}/></span><strong>Clear priorities</strong><p>Help organise reports by urgency and location context.</p></div>
       <div><span className="value-icon"><ShieldCheck size={19}/></span><strong>Account-linked</strong><p>Sign in so reports can be associated with an account.</p></div>
     </section>
 
-    <section className="landing-how" id="how-it-works">
+    <section className="landing-how landing-glass-section" id="how-it-works">
       <div className="landing-section-head"><span className="landing-eyebrow">SIMPLE. LOCAL. ACTIONABLE.</span><h2>From pothole to priority.</h2><p>A straightforward reporting process designed around useful evidence.</p></div>
       <div className="landing-steps">
         <article><span className="step-number">01</span><span className="step-icon"><UserRound size={21}/></span><h3>Create your account</h3><p>Register with your name, email and password, or use Google sign-in.</p></article>
@@ -67,7 +75,7 @@ export default function LandingPage() {
       </div>
     </section>
 
-    <section className="landing-callout">
+    <section className="landing-callout landing-glass-section">
       <div><span className="landing-eyebrow">YOUR STREET. YOUR VOICE.</span><h2>Seen a pothole on your route?</h2><p>Share the evidence and help build a clearer picture of road conditions in the pilot area.</p></div>
       <Link href={reportHref} className="primary-cta">Report a pothole <ArrowRight size={17}/></Link>
     </section>
