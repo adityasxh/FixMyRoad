@@ -20,7 +20,7 @@ export default function LandingPage() {
       revealItems.forEach((item) => item.classList.add("is-visible"));
     } else {
       observer = new IntersectionObserver((entries) => entries.forEach((entry) => {
-        if (entry.isIntersecting) { entry.target.classList.add("is-visible"); observer?.unobserve(entry.target); }
+        if (entry.isIntersecting) { entry.target.classList.add("is-visible"); } else { entry.target.classList.remove("is-visible"); }
       }), { threshold: 0.12, rootMargin: "0px 0px -35px 0px" });
       revealItems.forEach((item) => { item.classList.add("reveal-on-scroll"); observer?.observe(item); });
     }
