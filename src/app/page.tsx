@@ -30,7 +30,7 @@ export default function LandingPage() {
   async function logout() { if (!supabase) return; setLoggingOut(true); const { error } = await supabase.auth.signOut(); setLoggingOut(false); if (!error) setSignedIn(false); }
   return <main className="landing-shell">
     <header className="landing-nav landing-nav-glass">
-      <Link href="/" className="brand"><span className="brand-mark"><MapPinned size={23}/></span><span><strong>FixMyRoad</strong><small>GIS · ROAD INTELLIGENCE</small></span></Link>
+      <Link href="/" className="brand"><span className="brand-mark"><img src="/fixmyroad-logo.svg" alt="" /></span><span><strong>FixMyRoad</strong><small>GIS · ROAD INTELLIGENCE</small></span></Link>
       <button className="mobile-menu-toggle" aria-label="Toggle navigation" onClick={() => setMenuOpen(v => !v)}>{menuOpen ? <X size={21}/> : <Menu size={21}/>}</button>
       <nav className={menuOpen ? "landing-nav-links open" : "landing-nav-links"}>
         <a href="#how-it-works" onClick={() => setMenuOpen(false)}>How it works</a>
@@ -86,7 +86,7 @@ export default function LandingPage() {
     </section>
 
     <footer className="landing-footer">
-      <div className="footer-main"><Link href="/" className="brand"><span className="brand-mark"><MapPinned size={22}/></span><span><strong>FixMyRoad</strong><small>GIS · ROAD INTELLIGENCE</small></span></Link><p>Community reports. Geographic context. More transparent repair priorities.</p><div className="footer-links"><Link href="/dashboard">Explore reports</Link>{signedIn ? <Link href="/account">My dashboard</Link> : <>{signedIn ? <Link href="/account">My dashboard</Link> : <><Link href="/login">Sign in</Link><Link href="/register">Register</Link></>}</>}<Link href={reportHref}>Report a pothole</Link></div></div>
+      <div className="footer-main"><Link href="/" className="brand"><span className="brand-mark"><img src="/fixmyroad-logo.svg" alt="" /></span><span><strong>FixMyRoad</strong><small>GIS · ROAD INTELLIGENCE</small></span></Link><p>Community reports. Geographic context. More transparent repair priorities.</p><div className="footer-links"><Link href="/dashboard">Explore reports</Link>{signedIn ? <Link href="/account">My dashboard</Link> : <>{signedIn ? <Link href="/account">My dashboard</Link> : <><Link href="/login">Sign in</Link><Link href="/register">Register</Link></>}</>}<Link href={reportHref}>Report a pothole</Link></div></div>
       <div className="footer-bottom"><span>© {new Date().getFullYear()} FixMyRoad GIS · Wagholi, Pune pilot</span><span><ShieldCheck size={14}/> Reports are subject to review; submission does not guarantee repair.</span></div>
     </footer>
   </main>;
