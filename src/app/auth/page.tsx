@@ -177,7 +177,7 @@ export default function AuthPage() {
             <li><ShieldCheck size={16} /> Contact details for moderator follow-up</li>
             <li><ShieldCheck size={16} /> Better duplicate and abuse review</li>
           </ul>
-          <p className="auth-disclaimer">Use a strong password you don't use elsewhere. Phone ownership is not verified unless a separate SMS verification step is added.</p>
+          <p className="auth-disclaimer">Use a strong password you don&apos;t use elsewhere. Phone ownership is not verified unless a separate SMS verification step is added.</p>
         </>}
         </>}
       </section>
