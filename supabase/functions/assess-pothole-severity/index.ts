@@ -26,13 +26,11 @@ Deno.serve(async (req: Request) => {
   const supabaseUrl = Deno.env.get("SUPABASE_URL");
   const anonKey = Deno.env.get("SUPABASE_ANON_KEY");
   const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-  const geminiKey = Deno.env.get("GEMINI_API_KEY");
-  const primaryModel = Deno.env.get("GEMINI_MODEL") || "gemini-3.8-flash";
-  const fallbackModel = "gemini-3.6-flash";
-  const finalFallbackModel = "gemini-3.5-flash-lite";
+  const groqKey = Deno.env.get("GROQ_API_KEY");
+  const model = "qwen/qwen3.8-27b";
 
   if (!supabaseUrl || !anonKey || !serviceRoleKey) return json({ error: "Supabase function secrets are not configured." }, 500);
-  if (!geminiKey) return json({ error: "GEMINI_API_KEY secret is missing. Add it in Supabase Edge Function Secrets." }, 503);
+  if (!groqKey) return json({ error: "GROQ_API_KEY secret is missing. Add it in Supabase Edge Function Secrets." }, 503);
 
   const authorization = req.headers.get("Authorization");
   if (!authorization?.startsWith("Bearer ")) return json({ error: "Sign in is required." }, 401);
@@ -101,55 +99,44 @@ Return ONLY a JSON object with exactly these fields:
 {"pothole_detected": boolean, "estimated_severity": integer from 1 to 5, "confidence": number from 0 to 1, "reason": string, "needs_human_review": boolean}
 Severity guide: 1=minor surface defect; 2=small/shallow visible pothole; 3=moderate damage; 4=large/deep-appearing or substantial edge breakdown; 5=extensive/severe visible damage presenting a potentially serious hazard. A photo alone cannot establish actual depth. Be conservative and request human review if uncertain.`;
 
-    // Try the configured model, then current stable multimodal fallbacks. Avoid retired 2.0 models and restricted 2.5 access.
-    // Each model gets its own timeout so a single slow endpoint cannot consume the whole request.
-    let geminiResponse: Response | null = null;
-    let model = primaryModel;
-    let lastFailure = "";
-    const models = [...new Set([primaryModel, fallbackModel, finalFallbackModel])];
-    for (let attempt = 0; attempt < models.length; attempt++) {
-      model = models[attempt];
-      try {
-        geminiResponse = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json", "x-goog-api-key": geminiKey },
-            body: JSON.stringify({
-              contents: [{ role: "user", parts: [
-                { text: prompt },
-                { inline_data: { mime_type: mime, data: imageBase64 } },
-              ] }],
-              generationConfig: { responseMimeType: "application/json", temperature: 0.1, maxOutputTokens: 300 },
-            }),
-            signal: AbortSignal.timeout(18000),
-          },
-        );
-        if (geminiResponse.ok) break;
-        const details = await geminiResponse.text();
-        lastFailure = `HTTP ${geminiResponse.status}: ${details.slice(0, 400)}`;
-        console.error(`Gemini model ${model} attempt ${attempt + 1} failed:`, lastFailure);
-        if (![429, 500, 502, 503, 504].includes(geminiResponse.status)) break;
-      } catch (error) {
-        lastFailure = error instanceof Error ? error.message : "Gemini request failed.";
-        console.error(`Gemini model ${model} attempt ${attempt + 1} error:`, lastFailure);
-      }
-      if (attempt < models.length - 1) await new Promise((resolve) => setTimeout(resolve, 400 * (attempt + 1)));
+    const groqResponse = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${groqKey}`,
+      },
+      body: JSON.stringify({
+        model,
+        messages: [{
+          role: "user",
+          content: [
+            { type: "text", text: prompt },
+            { type: "image_url", image_url: { url: `data:${mime};base64,${imageBase64}` } },
+          ],
+        }],
+        temperature: 0.1,
+        max_completion_tokens: 400,
+        response_format: { type: "json_object" },
+      }),
+      signal: AbortSignal.timeout(25000),
+    });
+    if (!groqResponse.ok) {
+      const details = await groqResponse.text();
+      console.error("Groq vision request failed:", groqResponse.status, details.slice(0, 500));
+      if (groqResponse.status === 401 || groqResponse.status === 403) throw new Error("Groq rejected the API key or account access. Check GROQ_API_KEY and model access.");
+      if (groqResponse.status === 429) throw new Error("Groq rate limit or quota reached. Try again later.");
+      throw new Error(`Groq vision request failed (HTTP ${groqResponse.status}). Check function logs for details.`);
     }
-    if (!geminiResponse?.ok) {
-      const friendly = lastFailure.includes("429") ? "Gemini rate limit reached across available models. Try again shortly." : "Gemini models were unavailable or timed out. The report is saved; retry its AI assessment.";
-      throw new Error(friendly);
-    }
-
-    const geminiData = await geminiResponse.json();
-    const textPart = geminiData?.candidates?.[0]?.content?.parts?.find((p: { text?: string }) => typeof p.text === "string")?.text;
-    if (typeof textPart !== "string") throw new Error("Gemini returned no assessment.");
+    const groqData = await groqResponse.json();
+    const textPart = groqData?.choices?.[0]?.message?.content;
+    if (typeof textPart !== "string") throw new Error("Groq returned no assessment text.");
     const result = JSON.parse(textPart);
     const detected = result.pothole_detected === true;
     const severity = clampSeverity(result.estimated_severity);
     const confidence = Number(result.confidence);
-    if (detected && severity === null) throw new Error("Gemini returned an invalid severity score.");
-    if (!Number.isFinite(confidence) || confidence < 0 || confidence > 1) throw new Error("Gemini returned invalid confidence.");
+    if (detected && severity === null) throw new Error("Groq returned an invalid severity score.");
+    if (!Number.isFinite(confidence) || confidence < 0 || confidence > 1) throw new Error("Groq returned invalid confidence.");
+
 
     const notes = typeof result.reason === "string" ? result.reason.trim().slice(0, 500) : "No explanation provided.";
     const needsReview = result.needs_human_review === true || confidence < 0.7 || !detected;
@@ -157,7 +144,7 @@ Severity guide: 1=minor surface defect; 2=small/shallow visible pothole; 3=moder
     const { error: updateError } = await admin.from("pothole_reports").update({
       ai_assessed_severity: detected ? severity : null,
       ai_confidence: confidence,
-      ai_model: model,
+      ai_model: `groq/${model}`,
       ai_assessment_status: status,
       ai_assessment_notes: notes,
     }).eq("id", reportId);
