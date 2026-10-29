@@ -38,12 +38,16 @@ export default function LandingPage() {
         <div className="landing-cta-row"><Link href={reportHref} className="primary-cta"><Camera size={18}/> Report a pothole <ArrowRight size={17}/></Link><Link href="/dashboard" className="secondary-cta"><Map size={17}/> Explore the map</Link></div>
         <div className="landing-trust"><span><ShieldCheck size={16}/> Sign-in required for reports</span><span><LocateFixed size={16}/> Location-aware submissions</span></div>
       </div>
-      <div className="landing-hero-art" aria-label="Illustration of a road map with pothole reports">
-        <div className="art-map-grid"></div><div className="art-road art-road-one"></div><div className="art-road art-road-two"></div>
-        <div className="art-map-label label-one"><MapPinned size={14}/> WAGHOLI, PUNE</div>
-        <div className="art-pin pin-one"><AlertTriangle size={20}/></div><div className="art-pin pin-two"><MapPinned size={20}/></div><div className="art-pin pin-three"><Camera size={19}/></div>
-        <div className="art-report-card"><span className="art-card-icon"><AlertTriangle size={17}/></span><div><strong>Road hazard reported</strong><small>Photo + GPS location</small></div><span className="art-card-status">NEW</span></div>
-        <div className="art-map-caption"><span className="art-live-dot"/> COMMUNITY REPORTS · MAP VIEW</div>
+      <div className="landing-hero-art landing-engineer-art" aria-label="Floating cartoon civil engineer with a bridge blueprint">
+        <div className="engineer-glow" aria-hidden="true"></div>
+        <img
+          className="engineer-illustration"
+          src="/engineer.webp"
+          alt="Cheerful cartoon engineer in an orange hard hat presenting a bridge and road blueprint"
+          fetchPriority="high"
+        />
+        <span className="engineer-art-spark engineer-spark-one" aria-hidden="true"></span>
+        <span className="engineer-art-spark engineer-spark-two" aria-hidden="true"></span>
       </div>
     </section>
 
