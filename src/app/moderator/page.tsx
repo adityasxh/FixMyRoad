@@ -65,7 +65,7 @@ export default function ModeratorReviewPage() {
 
   return <main className="account-shell">
     <header className="account-nav"><Link href="/" className="brand"><span className="brand-mark"><ShieldCheck size={22}/></span><span><strong>FixMyRoad</strong><small>MODERATOR REVIEW</small></span></Link><div className="account-nav-actions"><Link href="/dashboard" className="account-map-link">Public dashboard</Link><Link href="/" className="account-map-link">Home</Link></div></header>
-    <section className="account-welcome"><div><div className="landing-eyebrow"><span/> HUMAN VERIFICATION</div><h1>Severity review queue.</h1><p>Compare the reporter estimate and model assessment, inspect the evidence, then confirm a severity.</p></div></section>
+    <section className="account-welcome"><div><div className="landing-eyebrow"><span/> HUMAN VERIFICATION</div><h1>Severity review queue.</h1><p>Compare the reported estimate with the photo assessment, inspect the evidence, then confirm a severity.</p></div></section>
     {error && <div className="auth-error" role="alert">{error}</div>}
     {notice && <div className="auth-success" role="status">{notice}</div>}
     {!error.startsWith("Moderator access is required") && <section className="account-panel">
@@ -74,8 +74,8 @@ export default function ModeratorReviewPage() {
         <div className="account-report-list">{reports.map(report => <article className="account-report-row" key={report.id}>
           <div className="account-report-copy">
             <strong>{report.title}</strong><span>{report.description || "No description provided"}</span>
-            <span>Citizen estimate: <b>{report.user_reported_severity ?? report.severity}/5</b> · Model assessment: <b>{report.ai_assessment_status === "assessed" && report.ai_assessed_severity ? report.ai_assessed_severity + "/5" : "Pending"}</b></span>
-            {report.ai_confidence !== null && <span>Model confidence: {Math.round(report.ai_confidence * 100)}% · {report.ai_model || "Model name unavailable"}</span>}
+            <span>Reported estimate: <b>{report.user_reported_severity ?? report.severity}/5</b> · Photo assessment: <b>{report.ai_assessment_status === "assessed" && report.ai_assessed_severity ? report.ai_assessed_severity + "/5" : "Pending"}</b></span>
+            {report.ai_confidence !== null && <span>Assessment confidence: {Math.round(report.ai_confidence * 100)}% · {report.ai_model || "Assessment details unavailable"}</span>}
             {report.photo_url && <a href={report.photo_url} target="_blank" rel="noreferrer" className="report-dashboard-link">Open photo evidence ↗</a>}
             <small>Reported {new Intl.DateTimeFormat("en-IN",{day:"numeric",month:"short",year:"numeric"}).format(new Date(report.reported_at))} · {report.verification_status}</small>
           </div>
