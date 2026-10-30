@@ -86,27 +86,6 @@ export default function AuthPage() {
     } finally { setBusy(false); }
   }
 
-  async function google() {
-    setError("");
-    setMessage("");
-    if (!supabase) {
-      setError("Supabase is not configured. Check .env.local and restart the server.");
-      return;
-    }
-    setBusy(true);
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: window.location.origin + "/auth/complete",
-        queryParams: { prompt: "select_account" },
-      },
-    });
-    if (error) {
-      setError(error.message);
-      setBusy(false);
-    }
-  }
-
   return (
     <main className="auth-shell">
       <Link href="/" className="auth-back"><ArrowLeft size={15} /> Back to dashboard</Link>
@@ -158,12 +137,7 @@ export default function AuthPage() {
           {mode === "signin" && <button className="text-button" type="button" onClick={() => { setResetMode(true); setError(""); setMessage(""); }}>Forgot password?</button>}
         </form>}
 
-        {!resetMode && <><div className="auth-divider"><span>OR CONTINUE WITH</span></div>
-        <button className="google-button" type="button" onClick={() => void google()} disabled={busy}>
-          {busy ? <LoaderCircle size={18} className="spin" /> : <span className="google-button-g">G</span>}
-          Continue with Google
-          <ArrowRight size={16} />
-        </button>
+        {!resetMode && <>
         <p className="auth-switch-link">
           {mode === "register" ? "Already have an account?" : "New to FixMyRoad?"}{" "}
           <Link href={mode === "register" ? "/login" : "/register"}>
